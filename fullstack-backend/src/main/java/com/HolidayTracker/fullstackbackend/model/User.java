@@ -1,20 +1,22 @@
 package com.HolidayTracker.fullstackbackend.model;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+@Scope ("prototype")
+@Component
 
-@Entity  // An entity is a lightweight persistence domain object. Typically, an entity represents a table in a relational database
 public class User {
-@Id
-@GeneratedValue
+
+
     private int ID;
     private String Email;
     private String Department;
     private String Data;
+
     private int ManagerID;
     private String UserType;
-    private int HoursBalance;
+    private int HoursAllowance;
+
 
     public int getID() {
         return ID;
@@ -64,11 +66,23 @@ public class User {
         UserType = userType;
     }
 
-    public int getHoursBalance() {
-        return HoursBalance;
+    public int getHoursAllowance() {
+        return HoursAllowance;
     }
 
-    public void setHoursBalance(int hoursBalance) {
-        HoursBalance = hoursBalance;
+    public void setHoursAllowance(int hoursAllowance) {
+        HoursAllowance = hoursAllowance;
+    }
+    @Override
+    public String toString() {
+        return "TestDBConnection{" +
+                "ID=" + ID +
+                ", Email='" + Email + '\'' +
+                ", Department='" + Department + '\'' +
+                ", Data='" + Data + '\'' +
+                ", ManagerID=" + ManagerID +
+                ", UserType='" + UserType + '\'' +
+                ", HoursAllowance=" + HoursAllowance +
+                '}';
     }
 }
