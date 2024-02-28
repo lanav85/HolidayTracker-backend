@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class User {
 
 
-    private int ID;
+    private long ID;
     private String Email;
     private String Department;
     private String Data;
