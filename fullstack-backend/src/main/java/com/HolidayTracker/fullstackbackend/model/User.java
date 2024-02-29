@@ -12,14 +12,24 @@ public class User {
     private String Email;
     private String Department;
     private String Data;
-
     private int ManagerID;
     private String UserType;
     private int HoursAllowance;
 
+    public User(int id, String email, String department, String data, int managerId, String userType, int hoursAllowance) {
+        this.ID = id;
+        this.Email = email;
+        this.Department = department;
+        this.Data = data;
+        this.ManagerID = managerId;
+        this.UserType = userType;
+        this.HoursAllowance = hoursAllowance;
+    }
+
 
     public int getID() {
-        return ID;
+
+        return (int) ID;
     }
 
     public void setID(int ID) {
@@ -27,14 +37,17 @@ public class User {
     }
 
     public String getEmail() {
+
         return Email;
     }
 
     public void setEmail(String email) {
+
         Email = email;
     }
 
     public String getDepartment() {
+
         return Department;
     }
 
@@ -47,14 +60,17 @@ public class User {
     }
 
     public void setData(String data) {
+
         Data = data;
     }
 
     public int getManagerID() {
+
         return ManagerID;
     }
 
     public void setManagerID(int managerID) {
+
         ManagerID = managerID;
     }
 
@@ -73,6 +89,7 @@ public class User {
     public void setHoursAllowance(int hoursAllowance) {
         HoursAllowance = hoursAllowance;
     }
+
     @Override
     public String toString() {
         return "TestDBConnection{" +
