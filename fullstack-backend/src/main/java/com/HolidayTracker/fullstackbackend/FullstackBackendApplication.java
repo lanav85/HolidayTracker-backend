@@ -1,4 +1,5 @@
 package com.HolidayTracker.fullstackbackend;
+
 import com.HolidayTracker.fullstackbackend.model.TestDB;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
@@ -14,12 +15,12 @@ import java.sql.SQLException;
 
 @SpringBootApplication
 public class FullstackBackendApplication {
-//CREATE INSTANCE TO TEST DAO - Retrieve
- public static void main(String[] args)  throws SQLException {
+    //CREATE INSTANCE TO TEST DAO - Retrieve
+    public static void main(String[] args) throws SQLException {
 
-	UserDao userDAO = new UserDaoImpl();
-	User user = userDAO.get(3);
-	System.out.println(user);
+        UserDao userDAO = new UserDaoImpl();
+        User user = userDAO.get(3);
+        System.out.println(user);
 
     }
 
@@ -33,8 +34,8 @@ Connection con = Database.getConnection();
 if (con !=null){
 	System.out.println("Database connection successful");
 }*/
-	//=======================================================
-	// Create an instance of TestDB and populate it with data
+    //=======================================================
+    // Create an instance of TestDB and populate it with data
 
 	/*	ApplicationContext context = SpringApplication.run(FullstackBackendApplication.class, args);
 		TestDB test = new TestDB();
@@ -48,6 +49,6 @@ if (con !=null){
 		// Print all test data from the database
 		System.out.println(testDBRepo.findAll());
 */
-	}
+}
 
 
