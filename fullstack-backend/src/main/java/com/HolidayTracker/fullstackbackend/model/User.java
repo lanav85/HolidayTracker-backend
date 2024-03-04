@@ -17,7 +17,11 @@ public class User {
     private int HoursAllowance;
 
     public User(int id, String email, String department, String data, int managerId, String userType, int hoursAllowance) {
+        this(email, department, data, managerId, userType, hoursAllowance);
         this.ID = id;
+    }
+
+    public User(String email, String department, String data, int managerId, String userType, int hoursAllowance) {
         this.Email = email;
         this.Department = department;
         this.Data = data;

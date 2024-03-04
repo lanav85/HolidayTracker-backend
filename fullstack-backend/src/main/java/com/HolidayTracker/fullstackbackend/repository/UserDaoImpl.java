@@ -4,13 +4,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-//CRUD - Retrieve
 public class UserDaoImpl implements UserDao {
-    @Override
-
+     //CRUD - Retrieve
     // This method retrieves a user from the database based on the provided user ID.
-    public User get(int id) throws SQLException {
-
+     @Override
+     public User get(int id) throws SQLException {
         Connection con = Database.getConnection(); // Establishes a database connection.
         User user = null;         // Initializes a User
 
@@ -87,18 +85,17 @@ public class UserDaoImpl implements UserDao {
 //1: connect to the database
         Connection con = Database.getConnection();
 //2:define SQL
-        String sql = "INSERT into users (id, Email, Department, Data, ManagerID, UserType, HoursAllowance) VALUES(?,?,?, ?::jsonb,?,?,?) ";
+        String sql = "INSERT into users (Email, Department, Data, ManagerID, UserType, HoursAllowance) VALUES(?,?, ?::jsonb,?,?,?) ";
 //3:Prepare statement
         PreparedStatement ps = con.prepareStatement(sql);
 //4:  Sets the user parameters in the SQL query.
-        ps.setInt(1, user.getID());
-        ps.setString(2,user.getEmail());
-        ps.setString(3,user.getDepartment());
-        ps.setString(4,user.getData());
-        ps.setInt(5,user.getManagerID());
-        ps.setString(6,user.getUserType());
-        ps.setInt(7,user.getHoursAllowance());
- //5: Executes the SQL statement in this PreparedStatement object
+        ps.setString(1, user.getEmail());
+        ps.setString(2, user.getDepartment());
+        ps.setString(3, user.getData());
+        ps.setInt(4, user.getManagerID());
+        ps.setString(5, user.getUserType());
+        ps.setInt(6, user.getHoursAllowance());
+        //5: Executes the SQL statement in this PreparedStatement object
         int result = ps.executeUpdate();
 
         Database.closePreparedStatement(ps);
@@ -109,12 +106,41 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void update(User user) throws SQLException {
+    public int update(User user) throws SQLException {
+        Connection connection = Database.getConnection();
+        String sql = "UPDATE users set  Email = ?, Department = ?, Data = ?::jsonb, ManagerID = ?, UserType = ?, HoursAllowance = ? where id =? ";
 
+        PreparedStatement ps = connection.prepareStatement(sql);
+
+        ps.setString(1, user.getEmail());
+        ps.setString(2, user.getDepartment());
+        ps.setString(3, user.getData());
+        ps.setInt(4, user.getManagerID());
+        ps.setString(5, user.getUserType());
+        ps.setInt(6, user.getHoursAllowance());
+        ps.setInt(7, user.getID());
+
+        int result = ps.executeUpdate();
+
+        Database.closePreparedStatement(ps);
+        Database.closeConnection(connection);
+
+        return result;
     }
 
     @Override
-    public void delete(User user) throws SQLException {
+    public int delete(User user) throws SQLException {
+        Connection connection = Database.getConnection();
+        String sql = "DELETE from users where id =? ";
+        PreparedStatement ps = connection.prepareStatement(sql);
 
+        ps.setInt(1, user.getID());
+
+        int result = ps.executeUpdate();
+
+        Database.closePreparedStatement(ps);
+        Database.closeConnection(connection);
+
+        return result;
     }
 }
