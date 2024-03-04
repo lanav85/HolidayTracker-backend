@@ -92,7 +92,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "TestDBConnection{" +
+        return " TestDBConnection{" +
                 "ID=" + ID +
                 ", Email='" + Email + '\'' +
                 ", Department='" + Department + '\'' +
@@ -100,6 +100,6 @@ public class User {
                 ", ManagerID=" + ManagerID +
                 ", UserType='" + UserType + '\'' +
                 ", HoursAllowance=" + HoursAllowance +
-                '}';
+                "}\n";
     }
 }
