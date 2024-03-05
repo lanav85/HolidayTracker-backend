@@ -68,6 +68,6 @@ public class HolidaysRequest {
                 ", ID=" + ID +
                 ", ManagerID=" + ManagerID +
                 ", RequestStatus='" + RequestStatus + '\'' +
-                '}';
+                "\n}";
     }
 }

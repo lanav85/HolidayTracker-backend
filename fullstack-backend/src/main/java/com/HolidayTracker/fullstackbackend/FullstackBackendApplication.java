@@ -1,23 +1,36 @@
 package com.HolidayTracker.fullstackbackend;
+import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.User;
+import com.HolidayTracker.fullstackbackend.repository.holidayRequests.RequestDAOImpl;
 import com.HolidayTracker.fullstackbackend.repository.user.UserDaoImpl;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @SpringBootApplication
 public class FullstackBackendApplication {
 
     public static void main(String[] args) throws SQLException {
+        RequestDAOImpl userDAO = new RequestDAOImpl();
+        HolidaysRequest deleteUser = userDAO.get(3);
+        System.out.println(deleteUser);
+
+        int result = userDAO.delete(deleteUser);
+        System.out.println(result);
+    }
+
+    }
+  /*//=======================================================
+//CREATE INSTANCE TO TEST DAO - DELETE
         UserDaoImpl userDAO = new UserDaoImpl();
         User deleteUser = userDAO.get(5);
         System.out.println(deleteUser);
 
         int result = userDAO.delete(deleteUser);
         System.out.println(result);
-    }
-}
-/*//=======================================================
+
+//=======================================================
 //CREATE INSTANCE TO TEST DAO - UPDATE
 
         UserDao userDAO = new UserDaoImpl();

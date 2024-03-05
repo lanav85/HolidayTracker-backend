@@ -15,10 +15,10 @@ public class RequestDAOImpl implements Dao<HolidaysRequest> {
         // 2 - Initializes a holiday request
         HolidaysRequest holidayRequest = null;
         // 3 - SQL query to select holidayRequests data based on holiday request ID.
-        String sql = "SELECT HolidayRequestID, Data, ID, ManagerID, RequestStatus FROM HolidaysRequests WHERE id = ?";
+        String sql = "SELECT HolidayRequestID, Data, ID, ManagerID, RequestStatus FROM HolidaysRequests WHERE HolidayRequestID = ?";
         //4 -Prepare Statement and Sets the holiday request ID parameter in the SQL query.
         PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, id);
+        ps.setInt(1,id);
         //5-  ResultSet object to hold the data from the database after executing a query.
         ResultSet rs = ps.executeQuery();
         //6- Retrieve Holiday Request data from the result set.
