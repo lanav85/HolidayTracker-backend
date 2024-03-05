@@ -1,13 +1,12 @@
 package com.HolidayTracker.fullstackbackend.repository.user;
 import com.HolidayTracker.fullstackbackend.model.User;
-import com.HolidayTracker.fullstackbackend.repository.Dao;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoImpl implements Dao<User> {
+public class UserDaoImpl  {
      //CRUD - Retrieve
     // This method retrieves a user from the database based on the provided user ID.
      public User get(int id) throws SQLException {
@@ -46,7 +45,7 @@ public class UserDaoImpl implements Dao<User> {
     }
 
     //CRUD -retrieve all
-    @Override
+
     public List<User> getAll() throws SQLException {
         Connection con = Database.getConnection();
         String sql = "SELECT id, Email, Department, Data, ManagerID,UserType, HoursAllowance FROM users ";
@@ -74,9 +73,37 @@ public class UserDaoImpl implements Dao<User> {
         Database.closeConnection(con);
         return users;
     }
+    public List<User> getAllUsersByManagerId(int ManagerID) throws SQLException {
+            Connection con = Database.getConnection();
+            String sql = "SELECT ID, Email, Department, Data, ManagerID, UserType, HoursAllowance FROM users WHERE ManagerID = ?";
 
+            List<User> users = new ArrayList<>();
+
+            // Use PreparedStatement instead of Statement
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, ManagerID); // Set the manager ID parameter
+
+            ResultSet rs = ps.executeQuery(); // Execute the query using PreparedStatement
+
+            while (rs.next()) {
+                int ID = rs.getInt("ID");
+                String Email = rs.getString("Email");
+                String Department = rs.getString("Department");
+                String Data = rs.getString("Data");
+                int ManagerId = rs.getInt("ManagerID");
+                String UserType = rs.getString("UserType");
+                int HoursAllowance = rs.getInt("HoursAllowance");
+
+                User user = new User(ID, Email, Department, Data, ManagerId, UserType, HoursAllowance);
+                users.add(user);
+            }
+            Database.closeResultSet(rs);
+            Database.closePreparedStatement(ps);
+            Database.closeConnection(con);
+
+            return users;
+    }
     // CRUD - Create
-    @Override
     public int insert(User user) throws SQLException {
 //1: connect to the database
         Connection con = Database.getConnection();
@@ -101,7 +128,7 @@ public class UserDaoImpl implements Dao<User> {
 
     }
 
-    @Override
+
     public int update(User user) throws SQLException {
         Connection connection = Database.getConnection();
         String sql = "UPDATE users set  Email = ?, Department = ?, Data = ?::jsonb, ManagerID = ?, UserType = ?, HoursAllowance = ? where id =? ";
@@ -124,14 +151,13 @@ public class UserDaoImpl implements Dao<User> {
         return result;
     }
 
-    @Override
-    public int delete(User user) throws SQLException {
+    public int delete(int id) throws SQLException {
 
         Connection connection = Database.getConnection();
         String sql = "DELETE from users where id =? ";
         PreparedStatement ps = connection.prepareStatement(sql);
 
-        ps.setInt(1, user.getID());
+        ps.setInt(1, id);
 
         int result = ps.executeUpdate();
 

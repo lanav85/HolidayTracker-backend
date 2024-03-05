@@ -1,6 +1,5 @@
 package com.HolidayTracker.fullstackbackend.repository.holidayRequests;
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
-import com.HolidayTracker.fullstackbackend.repository.Dao;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 
 import java.sql.*;
