@@ -2,17 +2,29 @@ package com.HolidayTracker.fullstackbackend.model;
 
 public class HolidaysRequest {
 
-    private long HolidayRequestID;
+    private int HolidayRequestID;
     private String Data;
-    private long ID;
-    private long ManagerID;
+    private int ID;
+    private int ManagerID;
     private String RequestStatus;
 
-    public long getHolidayRequestID() {
+    public HolidaysRequest( String data, int id, int managerID, String requestStatus) {
+        this.Data = data;
+        this.ID=id;
+        this.ManagerID = managerID;
+        this.RequestStatus = requestStatus;
+    }
+    public HolidaysRequest(int holidayRequestID, String data, int id, int managerID, String requestStatus) {
+        this( data,  id,  managerID,  requestStatus);
+        this.HolidayRequestID = holidayRequestID;
+
+    }
+
+    public int getHolidayRequestID() {
         return HolidayRequestID;
     }
 
-    public void setHolidayRequestID(long holidayRequestID) {
+    public void setHolidayRequestID(int holidayRequestID) {
         HolidayRequestID = holidayRequestID;
     }
 
@@ -24,19 +36,19 @@ public class HolidaysRequest {
         Data = data;
     }
 
-    public long getID() {
+    public int getID() {
         return ID;
     }
 
-    public void setID(long ID) {
+    public void setID(int ID) {
         this.ID = ID;
     }
 
-    public long getManagerID() {
+    public int getManagerID() {
         return ManagerID;
     }
 
-    public void setManagerID(long managerID) {
+    public void setManagerID(int managerID) {
         ManagerID = managerID;
     }
 

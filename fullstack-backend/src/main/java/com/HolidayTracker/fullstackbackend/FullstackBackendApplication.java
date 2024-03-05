@@ -1,24 +1,16 @@
 package com.HolidayTracker.fullstackbackend;
-import com.HolidayTracker.fullstackbackend.model.TestDB;
 import com.HolidayTracker.fullstackbackend.model.User;
-import com.HolidayTracker.fullstackbackend.repository.Database;
-import com.HolidayTracker.fullstackbackend.repository.TestDBRepo;
-import com.HolidayTracker.fullstackbackend.repository.UserDao;
-import com.HolidayTracker.fullstackbackend.repository.UserDaoImpl;
-import org.springframework.boot.SpringApplication;
+import com.HolidayTracker.fullstackbackend.repository.user.UserDaoImpl;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 @SpringBootApplication
 public class FullstackBackendApplication {
 
     public static void main(String[] args) throws SQLException {
-        UserDao userDAO = new UserDaoImpl();
-        User deleteUser = userDAO.get(0);
+        UserDaoImpl userDAO = new UserDaoImpl();
+        User deleteUser = userDAO.get(5);
         System.out.println(deleteUser);
 
         int result = userDAO.delete(deleteUser);
@@ -73,6 +65,3 @@ if (con !=null){
 		// Print all test data from the database
 		System.out.println(testDBRepo.findAll());
 */
-
-
-

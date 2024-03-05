@@ -1,16 +1,18 @@
-package com.HolidayTracker.fullstackbackend.repository;
+package com.HolidayTracker.fullstackbackend.repository.user;
 import com.HolidayTracker.fullstackbackend.model.User;
+import com.HolidayTracker.fullstackbackend.repository.Dao;
+import com.HolidayTracker.fullstackbackend.repository.Database;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl implements Dao<User> {
      //CRUD - Retrieve
     // This method retrieves a user from the database based on the provided user ID.
-     @Override
      public User get(int id) throws SQLException {
         Connection con = Database.getConnection(); // Establishes a database connection.
-        User user = null;         // Initializes a User
+        User holidayRequest = null;         // Initializes a User
 
         // SQL query to select user data based on user ID.
         String sql = "SELECT id, Email, Department, Data, ManagerID, UserType, HoursAllowance FROM users WHERE id = ?"; // "Where id = ?" only retrieve rows where the value in the id column matches the value that we'll specify later
@@ -33,14 +35,14 @@ public class UserDaoImpl implements UserDao {
             int HoursAllowance = rs.getInt("HoursAllowance");
 
             // Creates a new User object with the retrieved data.
-            user = new User(ID, Email, Department, Data, ManagerId, UserType, HoursAllowance);
+            holidayRequest = new User(ID, Email, Department, Data, ManagerId, UserType, HoursAllowance);
         }
         // Closes the result set, prepared statement, and database connection to release resources.
         Database.closeResultSet(rs);
         Database.closePreparedStatement(ps);
         Database.closeConnection(con);
         // Returns the retrieved User object, or null if no user was found.
-        return user;
+        return holidayRequest;
     }
 
     //CRUD -retrieve all
@@ -71,12 +73,6 @@ public class UserDaoImpl implements UserDao {
         Database.closeStatement(stmt);
         Database.closeConnection(con);
         return users;
-    }
-
-    //CRUD - create or update
-    @Override
-    public void save(User user) throws SQLException {
-
     }
 
     // CRUD - Create
@@ -130,6 +126,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public int delete(User user) throws SQLException {
+
         Connection connection = Database.getConnection();
         String sql = "DELETE from users where id =? ";
         PreparedStatement ps = connection.prepareStatement(sql);

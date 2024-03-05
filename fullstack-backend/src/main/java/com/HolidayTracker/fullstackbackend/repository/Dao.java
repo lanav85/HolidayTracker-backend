@@ -10,7 +10,6 @@ public interface Dao<T> {
    // Optional<T> get(long id) throws SQLException;
 
     List<T> getAll() throws SQLException;
-    void save(T t) throws SQLException;
     int insert(T t) throws SQLException;
     int update(T t) throws SQLException;
     int delete(T t) throws SQLException;
