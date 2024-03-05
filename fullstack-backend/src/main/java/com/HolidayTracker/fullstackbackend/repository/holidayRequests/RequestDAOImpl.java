@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RequestDAOImpl implements Dao<HolidaysRequest> {
+public class RequestDAOImpl {
 
     public HolidaysRequest get(int id) throws SQLException {
         //1 - Connect to the database
@@ -40,7 +40,7 @@ public class RequestDAOImpl implements Dao<HolidaysRequest> {
 
     }
 
-    @Override
+
     public List<HolidaysRequest> getAll() throws SQLException {
         Connection con = Database.getConnection();
         String sql = "SELECT HolidayRequestID, Data, ID, ManagerID, RequestStatus FROM HolidaysRequests ";
@@ -66,7 +66,7 @@ public class RequestDAOImpl implements Dao<HolidaysRequest> {
         return holidaysRequests;
     }
 
-    @Override
+
     public int insert(HolidaysRequest holidaysRequest) throws SQLException {
         Connection con = Database.getConnection();
 
@@ -85,7 +85,6 @@ public class RequestDAOImpl implements Dao<HolidaysRequest> {
         return result;
     }
 
-    @Override
     public int update(HolidaysRequest holidaysRequest) throws SQLException {
         Connection connection = Database.getConnection();
         String sql = "UPDATE HolidaysRequests set  Data = ?::jsonb,ID = ?, ManagerID = ?, RequestStatus = ? where HolidayRequestID =? ";
@@ -106,7 +105,6 @@ public class RequestDAOImpl implements Dao<HolidaysRequest> {
         return result;
     }
 
-    @Override
     public int delete(HolidaysRequest holidaysRequest) throws SQLException {
         Connection connection = Database.getConnection();
         String sql = "DELETE from HolidaysRequests where HolidayRequestID = ? ";
