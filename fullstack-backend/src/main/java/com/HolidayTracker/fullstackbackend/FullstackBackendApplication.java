@@ -12,8 +12,12 @@ import java.util.List;
 public class FullstackBackendApplication {
 
     public static void main(String[] args) throws SQLException {
-        RequestDAOImpl userDAO = new RequestDAOImpl();
-        HolidaysRequest deleteUser = userDAO.get(3);
+        UserDaoImpl userDAO = new UserDaoImpl();
+        User deleteUser = userDAO.get(1);
+        if(deleteUser == null) {
+            System.out.println("User does not exist" );
+            return;
+        }
         System.out.println(deleteUser);
 
         int result = userDAO.delete(deleteUser);
@@ -23,8 +27,12 @@ public class FullstackBackendApplication {
     }
   /*//=======================================================
 //CREATE INSTANCE TO TEST DAO - DELETE
-        UserDaoImpl userDAO = new UserDaoImpl();
-        User deleteUser = userDAO.get(5);
+       UserDaoImpl userDAO = new UserDaoImpl();
+        User deleteUser = userDAO.get(1);
+        if(deleteUser == null) {
+            System.out.println("User does not exist" );
+            return;
+        }
         System.out.println(deleteUser);
 
         int result = userDAO.delete(deleteUser);
