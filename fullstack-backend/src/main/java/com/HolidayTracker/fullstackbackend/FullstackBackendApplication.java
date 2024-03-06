@@ -13,29 +13,35 @@ public class FullstackBackendApplication {
 
     public static void main(String[] args) throws SQLException {
         UserDaoImpl userDAO = new UserDaoImpl();
-        User deleteUser = userDAO.get(1);
+
+        int userId = 1;
+
+        User deleteUser = userDAO.get(userId);
         if(deleteUser == null) {
             System.out.println("User does not exist" );
             return;
         }
         System.out.println(deleteUser);
 
-        int result = userDAO.delete(deleteUser);
+        int result = userDAO.delete(userId);
         System.out.println(result);
     }
 
     }
   /*//=======================================================
 //CREATE INSTANCE TO TEST DAO - DELETE
-       UserDaoImpl userDAO = new UserDaoImpl();
-        User deleteUser = userDAO.get(1);
+ UserDaoImpl userDAO = new UserDaoImpl();
+
+        int userId = 1;
+
+        User deleteUser = userDAO.get(userId);
         if(deleteUser == null) {
             System.out.println("User does not exist" );
             return;
         }
         System.out.println(deleteUser);
 
-        int result = userDAO.delete(deleteUser);
+        int result = userDAO.delete(userId);
         System.out.println(result);
 
 //=======================================================
