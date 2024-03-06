@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping("/CreateNewUser")
-    public int newUser(@RequestBody User newUser) throws SQLException {
+    public int createUser(@RequestBody User newUser) throws SQLException {
         return userDaoImpl.insert(newUser);
     }
 

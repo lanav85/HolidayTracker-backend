@@ -83,7 +83,7 @@ public class RequestDAOImpl {
         return holidayRequest;
 
     }
-    
+
     public List<HolidaysRequest> getAll() throws SQLException {
         Connection con = Database.getConnection();
         String sql = "SELECT HolidayRequestID, Data, ID, ManagerID, RequestStatus FROM HolidaysRequests ";
@@ -148,12 +148,12 @@ public class RequestDAOImpl {
         return result;
     }
 
-    public int delete(HolidaysRequest holidaysRequest) throws SQLException {
+    public int delete(int holidaysRequest) throws SQLException {
         Connection connection = Database.getConnection();
         String sql = "DELETE from HolidaysRequests where HolidayRequestID = ? ";
         PreparedStatement ps = connection.prepareStatement(sql);
 
-        ps.setInt(1, holidaysRequest.getHolidayRequestID());
+        ps.setInt(1, holidaysRequest);
 
         int result = ps.executeUpdate();
 
