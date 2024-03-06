@@ -39,8 +39,51 @@ public class RequestDAOImpl {
         return holidayRequest;
 
     }
+    public HolidaysRequest getbyUserID(int id) throws SQLException {
+        Connection con = Database.getConnection();
+        HolidaysRequest holidayRequest = null;
+        String sql = "SELECT HolidayRequestID, Data, ID, ManagerID, RequestStatus FROM HolidaysRequests WHERE ID = ?";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1,id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            int HolidayRequestID = rs.getInt("HolidayRequestID");
+            String Data = rs.getString("Data");
+            int ID = rs.getInt("ID");
+            int ManagerID = rs.getInt("ManagerID");
+            String RequestStatus = rs.getString("RequestStatus");
 
+            holidayRequest = new HolidaysRequest(HolidayRequestID, Data, ID, ManagerID, RequestStatus);
+        }
+        Database.closeResultSet(rs);
+        Database.closePreparedStatement(ps);
+        Database.closeConnection(con);
+        return holidayRequest;
 
+    }
+    public HolidaysRequest getbyManagerID(int id) throws SQLException {
+        Connection con = Database.getConnection();
+        HolidaysRequest holidayRequest = null;
+        String sql = "SELECT HolidayRequestID, Data, ID, ManagerID, RequestStatus FROM HolidaysRequests WHERE ManagerID = ?";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1,id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            int HolidayRequestID = rs.getInt("HolidayRequestID");
+            String Data = rs.getString("Data");
+            int ID = rs.getInt("ID");
+            int ManagerID = rs.getInt("ManagerID");
+            String RequestStatus = rs.getString("RequestStatus");
+
+            holidayRequest = new HolidaysRequest(HolidayRequestID, Data, ID, ManagerID, RequestStatus);
+        }
+        Database.closeResultSet(rs);
+        Database.closePreparedStatement(ps);
+        Database.closeConnection(con);
+        return holidayRequest;
+
+    }
+    
     public List<HolidaysRequest> getAll() throws SQLException {
         Connection con = Database.getConnection();
         String sql = "SELECT HolidayRequestID, Data, ID, ManagerID, RequestStatus FROM HolidaysRequests ";
