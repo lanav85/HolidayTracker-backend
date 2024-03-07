@@ -3,6 +3,7 @@ import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.holidayRequests.RequestDAOImpl;
 import com.HolidayTracker.fullstackbackend.repository.user.UserDaoImpl;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.sql.SQLException;
@@ -12,25 +13,13 @@ import java.util.List;
 public class FullstackBackendApplication {
 
     public static void main(String[] args) throws SQLException {
-        UserDaoImpl userDAO = new UserDaoImpl();
-
-        int userId = 1;
-
-        User deleteUser = userDAO.get(userId);
-        if(deleteUser == null) {
-            System.out.println("User does not exist" );
-            return;
-        }
-        System.out.println(deleteUser);
-
-        int result = userDAO.delete(userId);
-        System.out.println(result);
+        SpringApplication.run(FullstackBackendApplication.class, args);
     }
 
     }
   /*//=======================================================
 //CREATE INSTANCE TO TEST DAO - DELETE
- UserDaoImpl userDAO = new UserDaoImpl();
+ Us        UserDaoImpl userDAO = new UserDaoImpl();
 
         int userId = 1;
 

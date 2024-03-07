@@ -1,11 +1,13 @@
 package com.HolidayTracker.fullstackbackend.repository.holidayRequests;
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.repository.Database;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class RequestDAOImpl {
 
     public HolidaysRequest get(int id) throws SQLException {
