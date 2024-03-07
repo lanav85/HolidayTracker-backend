@@ -1,11 +1,13 @@
 package com.HolidayTracker.fullstackbackend.repository.user;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class UserDaoImpl  {
      //CRUD - Retrieve
     // This method retrieves a user from the database based on the provided user ID.

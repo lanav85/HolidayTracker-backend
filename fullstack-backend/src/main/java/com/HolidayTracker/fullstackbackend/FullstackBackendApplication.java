@@ -5,10 +5,11 @@ import com.HolidayTracker.fullstackbackend.repository.holidayRequests.RequestDAO
 import com.HolidayTracker.fullstackbackend.repository.user.UserDaoImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.sql.SQLException;
 import java.util.List;
-
+@ComponentScan("com.HolidayTracker.fullstackbackend")
 @SpringBootApplication
 public class FullstackBackendApplication {
 
