@@ -8,55 +8,34 @@ import org.springframework.stereotype.Component;
 public class User {
 
 
-    private long ID;
-    private String Email;
-    private String Department;
+    private long UserID;
+
+
     private String Data;
-    private int ManagerID;
-    private String UserType;
-    private int HoursAllowance;
+    private String Email;
+    private int HolidayEntitlement;
+    private int DepartmentID;
+    private int RoleID;
 
-    public User(int id, String email, String department, String data, int managerId, String userType, int hoursAllowance) {
-        this(email, department, data, managerId, userType, hoursAllowance);
-        this.ID = id;
+    public User(int id, String email, int department, String data, int roleID,  int hoursAllowance) {
+        this(email, department, data, roleID, hoursAllowance);
+        this.UserID = id;
     }
 
-    public User(String email, String department, String data, int managerId, String userType, int hoursAllowance) {
+    public User(String email, int department, String data, int roleID,  int hoursAllowance) {
         this.Email = email;
-        this.Department = department;
+        this.DepartmentID = department;
         this.Data = data;
-        this.ManagerID = managerId;
-        this.UserType = userType;
-        this.HoursAllowance = hoursAllowance;
+        this.RoleID = roleID;
+        this.HolidayEntitlement = hoursAllowance;
     }
 
-
-    public int getID() {
-
-        return (int) ID;
+    public long getUserID() {
+        return UserID;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
-    public String getEmail() {
-
-        return Email;
-    }
-
-    public void setEmail(String email) {
-
-        Email = email;
-    }
-
-    public String getDepartment() {
-
-        return Department;
-    }
-
-    public void setDepartment(String department) {
-        Department = department;
+    public void setUserID(long userID) {
+        UserID = userID;
     }
 
     public String getData() {
@@ -64,46 +43,50 @@ public class User {
     }
 
     public void setData(String data) {
-
         Data = data;
     }
 
-    public int getManagerID() {
-
-        return ManagerID;
+    public String getEmail() {
+        return Email;
     }
 
-    public void setManagerID(int managerID) {
-
-        ManagerID = managerID;
+    public void setEmail(String email) {
+        Email = email;
     }
 
-    public String getUserType() {
-        return UserType;
+    public int getHolidayEntitlement() {
+        return HolidayEntitlement;
     }
 
-    public void setUserType(String userType) {
-        UserType = userType;
+    public void setHolidayEntitlement(int holidayEntitlement) {
+        HolidayEntitlement = holidayEntitlement;
     }
 
-    public int getHoursAllowance() {
-        return HoursAllowance;
+    public int getDepartmentID() {
+        return DepartmentID;
     }
 
-    public void setHoursAllowance(int hoursAllowance) {
-        HoursAllowance = hoursAllowance;
+    public void setDepartmentID(int departmentID) {
+        DepartmentID = departmentID;
+    }
+
+    public int getRoleID() {
+        return RoleID;
+    }
+
+    public void setRoleID(int roleID) {
+        RoleID = roleID;
     }
 
     @Override
     public String toString() {
-        return " TestDBConnection{" +
-                "ID=" + ID +
-                ", Email='" + Email + '\'' +
-                ", Department='" + Department + '\'' +
+        return "User{" +
+                "UserID=" + UserID +
                 ", Data='" + Data + '\'' +
-                ", ManagerID=" + ManagerID +
-                ", UserType='" + UserType + '\'' +
-                ", HoursAllowance=" + HoursAllowance +
-                "}\n";
+                ", Email='" + Email + '\'' +
+                ", HolidayEntitlement=" + HolidayEntitlement +
+                ", DepartmentID=" + DepartmentID +
+                ", RoleID=" + RoleID +
+                '}';
     }
 }

@@ -30,7 +30,7 @@ public class UserController {
 
     @PutMapping("/UpdateUser")
     public int updateUser(@PathVariable int id, @RequestBody User user) throws SQLException {
-        user.setID(id);
+        user.setUserID(id);
         return userDaoImpl.update(user);
     }
 

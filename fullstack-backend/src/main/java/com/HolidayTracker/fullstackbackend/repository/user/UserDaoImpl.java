@@ -115,11 +115,11 @@ public class UserDaoImpl  {
         PreparedStatement ps = con.prepareStatement(sql);
 //4:  Sets the user parameters in the SQL query.
         ps.setString(1, user.getEmail());
-        ps.setString(2, user.getDepartment());
+        ps.setString(2, user.getDepartmentID());
         ps.setString(3, user.getData());
-        ps.setInt(4, user.getManagerID());
+        ps.setInt(4, user.getRoleID());
         ps.setString(5, user.getUserType());
-        ps.setInt(6, user.getHoursAllowance());
+        ps.setInt(6, user.getHolidayEntitlement());
         //5: Executes the SQL statement in this PreparedStatement object
         int result = ps.executeUpdate();
 
@@ -138,12 +138,12 @@ public class UserDaoImpl  {
         PreparedStatement ps = connection.prepareStatement(sql);
 
         ps.setString(1, user.getEmail());
-        ps.setString(2, user.getDepartment());
+        ps.setString(2, user.getDepartmentID());
         ps.setString(3, user.getData());
-        ps.setInt(4, user.getManagerID());
+        ps.setInt(4, user.getRoleID());
         ps.setString(5, user.getUserType());
-        ps.setInt(6, user.getHoursAllowance());
-        ps.setInt(7, user.getID());
+        ps.setInt(6, user.getHolidayEntitlement());
+        ps.setInt(7, user.getUserID());
 
         int result = ps.executeUpdate();
 
