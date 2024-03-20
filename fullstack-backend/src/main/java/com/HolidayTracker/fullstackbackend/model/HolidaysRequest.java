@@ -1,73 +1,63 @@
 package com.HolidayTracker.fullstackbackend.model;
 
+import java.util.Date;
+
 public class HolidaysRequest {
 
-    private int HolidayRequestID;
-    private String Data;
-    private int ID;
-    private int ManagerID;
-    private String RequestStatus;
+    private int requestID;
+    private int userID;
+    private Date requestFrom;
+    private Date requestTo;
+    private String status;
 
-    public HolidaysRequest( String data, int id, int managerID, String requestStatus) {
-        this.Data = data;
-        this.ID=id;
-        this.ManagerID = managerID;
-        this.RequestStatus = requestStatus;
-    }
-    public HolidaysRequest(int holidayRequestID, String data, int id, int managerID, String requestStatus) {
-        this( data,  id,  managerID,  requestStatus);
-        this.HolidayRequestID = holidayRequestID;
-
+    public int getRequestID() {
+        return requestID;
     }
 
-    public int getHolidayRequestID() {
-        return HolidayRequestID;
+    public void setRequestID(int requestID) {
+        this.requestID = requestID;
     }
 
-    public void setHolidayRequestID(int holidayRequestID) {
-        HolidayRequestID = holidayRequestID;
+    public int getUserID() {
+        return userID;
     }
 
-    public String getData() {
-        return Data;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
-    public void setData(String data) {
-        Data = data;
+    public Date getRequestFrom() {
+        return requestFrom;
     }
 
-    public int getID() {
-        return ID;
+    public void setRequestFrom(Date requestFrom) {
+        this.requestFrom = requestFrom;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public Date getRequestTo() {
+        return requestTo;
     }
 
-    public int getManagerID() {
-        return ManagerID;
+    public void setRequestTo(Date requestTo) {
+        this.requestTo = requestTo;
     }
 
-    public void setManagerID(int managerID) {
-        ManagerID = managerID;
+    public String getStatus() {
+        return status;
     }
 
-    public String getRequestStatus() {
-        return RequestStatus;
-    }
-
-    public void setRequestStatus(String requestStatus) {
-        RequestStatus = requestStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
     public String toString() {
         return "HolidaysRequest{" +
-                "HolidayRequestID=" + HolidayRequestID +
-                ", Data='" + Data + '\'' +
-                ", ID=" + ID +
-                ", ManagerID=" + ManagerID +
-                ", RequestStatus='" + RequestStatus + '\'' +
-                "\n}";
+                "requestID=" + requestID +
+                ", userID=" + userID +
+                ", requestFrom=" + requestFrom +
+                ", requestTo=" + requestTo +
+                ", status='" + status + '\'' +
+                '}';
     }
 }
