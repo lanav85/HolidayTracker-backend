@@ -46,7 +46,7 @@ public class UserController {
             return 0;
         }
         if (user.getUserType().equals("Manager")) {
-            List<User> users = userDaoImpl.getAllUsersByManagerId(id);
+            List<User> users = userDaoImpl.getAllUsersByDepartmentID(id);
 
             if (!users.isEmpty()) {
                 System.out.println("User with ID " + id + " cannot be deleted as there are users assigned to them");
