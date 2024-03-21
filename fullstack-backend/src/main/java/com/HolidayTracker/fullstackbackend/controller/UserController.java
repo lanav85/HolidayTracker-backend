@@ -41,7 +41,7 @@ public class UserController {
             System.out.println("User with ID " + id + " does not exist");
             return 0;
         }
-        if (user.getUserType().equals("HRManager")) {
+        /*if (user.getUserType().equals("HRManager")) {
             System.out.println("The HRManager cannot be deleted from the system");
             return 0;
         }
@@ -56,7 +56,7 @@ public class UserController {
                 return 0;
 
             }
-        }
+        } */
         return userDaoImpl.delete(id);
     }
 }
