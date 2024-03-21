@@ -7,16 +7,14 @@ import org.springframework.stereotype.Component;
 
 public class User {
 
-
-    private long UserID;
-
-
+    private int UserID;
     private String Data;
     private String Email;
     private int HolidayEntitlement;
     private int DepartmentID;
     private int RoleID;
 
+    //constructor overload
     public User(int id, String email, int department, String data, int roleID,  int hoursAllowance) {
         this(email, department, data, roleID, hoursAllowance);
         this.UserID = id;
@@ -29,12 +27,19 @@ public class User {
         this.RoleID = roleID;
         this.HolidayEntitlement = hoursAllowance;
     }
+    public User(int id, int department, String data, int roleID,  int hoursAllowance) {
+        this.UserID = id;
+        this.DepartmentID = department;
+        this.Data = data;
+        this.RoleID = roleID;
+        this.HolidayEntitlement = hoursAllowance;
+    }
 
     public long getUserID() {
         return UserID;
     }
 
-    public void setUserID(long userID) {
+    public void setUserID(int userID) {
         UserID = userID;
     }
 

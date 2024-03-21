@@ -6,6 +6,13 @@ public class Role {
     private String roleDescription;
     private int approves;
 
+    public Role(int roleID, char level, String roleDescription, int approves) {
+        this.roleID = roleID;
+        this.level = level;
+        this.roleDescription = roleDescription;
+        this.approves = approves;
+    }
+
     public char getLevel() {
         return level;
     }
