@@ -44,16 +44,16 @@ public class HolidaysRequest {
         this.userID = userID;
     }
 
-    public Date getRequestFrom() {
-        return requestFrom;
+    public java.sql.Date getRequestFrom() {
+        return (java.sql.Date) requestFrom;
     }
 
     public void setRequestFrom(Date requestFrom) {
         this.requestFrom = requestFrom;
     }
 
-    public Date getRequestTo() {
-        return requestTo;
+    public java.sql.Date getRequestTo() {
+        return (java.sql.Date) requestTo;
     }
 
     public void setRequestTo(Date requestTo) {
