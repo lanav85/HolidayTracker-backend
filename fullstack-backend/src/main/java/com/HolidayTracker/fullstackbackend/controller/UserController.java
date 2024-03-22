@@ -3,6 +3,8 @@ package com.HolidayTracker.fullstackbackend.controller;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.user.UserDaoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -25,8 +27,17 @@ public class UserController {
     }
 
     @PostMapping("/CreateNewUser")
-    public int createUser(@RequestBody User newUser) throws SQLException {
-        return userDaoImpl.insert(newUser);
+    public ResponseEntity<Object> createUser(@RequestBody User newUser) {
+        try {
+            int result = userDaoImpl.insert(newUser);
+            if (result > 0) {
+                return new ResponseEntity<>("User successfully created", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Unable to create user", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/UpdateUser/{userId}")
@@ -35,13 +46,23 @@ public class UserController {
         return userDaoImpl.update(user);
     }
 
-    @DeleteMapping("/DeleteUser")
-    public int deleteUserById(@PathVariable int id) throws SQLException {
-        User user = userDaoImpl.get(id);
-        if (user == null) {
-            System.out.println("User with ID " + id + " does not exist");
-            return 0;
+    @DeleteMapping("/DeleteUser/{userId}")
+    public ResponseEntity<Object> deleteUserById(@PathVariable int userId) throws SQLException {
+
+        User user = userDaoImpl.get(userId);
+
+        try {
+            int result = userDaoImpl.delete(userId);
+            if (result > 0) {
+                return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Unable to delete user", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+}
         /*if (user.getUserType().equals("HRManager")) {
             System.out.println("The HRManager cannot be deleted from the system");
             return 0;
@@ -57,7 +78,6 @@ public class UserController {
                 return 0;
 
             }
-        } */
-        return userDaoImpl.delete(id);
-    }
-}
+        }
+        return userDaoImpl.delete(userId);
+    }*/

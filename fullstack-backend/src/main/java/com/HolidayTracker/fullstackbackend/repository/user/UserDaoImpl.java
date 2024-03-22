@@ -149,7 +149,6 @@ public class UserDaoImpl  {
 
         Database.closePreparedStatement(ps);
         Database.closeConnection(connection);
-
         return result;
     }
 
