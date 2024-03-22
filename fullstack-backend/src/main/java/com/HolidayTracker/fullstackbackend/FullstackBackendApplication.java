@@ -1,14 +1,10 @@
 package com.HolidayTracker.fullstackbackend;
-import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
-import com.HolidayTracker.fullstackbackend.model.User;
-import com.HolidayTracker.fullstackbackend.repository.holidayRequests.RequestDAOImpl;
-import com.HolidayTracker.fullstackbackend.repository.user.UserDaoImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 import java.sql.SQLException;
-import java.util.List;
+
 @ComponentScan("com.HolidayTracker.fullstackbackend")
 @SpringBootApplication
 public class FullstackBackendApplication {

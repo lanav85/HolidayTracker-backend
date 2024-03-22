@@ -13,10 +13,11 @@ public class UserController {
     @Autowired
     private UserDaoImpl userDaoImpl;
 
-    @GetMapping("/RetrieveUserbyID")
-    public User getUserById(@PathVariable int id) throws SQLException {  // @PathVariable identifies an entity with a primary key
-        return userDaoImpl.get(id);
+    @GetMapping("/RetrieveUserbyID/{userId}")
+    public User getUserById(@PathVariable("userId") int userId) throws SQLException {
+        return userDaoImpl.get(userId); // Assuming userDaoImpl is your DAO implementation
     }
+
 
     @GetMapping("/RetrieveAllUsers")
     public List<User> getAll() throws SQLException {

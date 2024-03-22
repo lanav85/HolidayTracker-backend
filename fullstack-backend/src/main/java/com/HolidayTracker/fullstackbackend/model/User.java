@@ -16,14 +16,16 @@ public class User {
 
     //Add constructor overload
 
-
-    public User(int userID, String data, String email, int holidayEntitlement, int departmentID, int roleID) {
-        UserID = userID;
-        Data = data;
-        Email = email;
-        HolidayEntitlement = holidayEntitlement;
-        DepartmentID = departmentID;
-        RoleID = roleID;
+    public User(int userID, String data, String email, int holidayEntitlement, int departmentID, int roleID){
+        this.UserID = userID;
+        this.Data = data;
+        this.Email = email;
+        this.HolidayEntitlement = holidayEntitlement;
+        this.DepartmentID = departmentID;
+        this.RoleID = roleID;
+    }
+    public User(String data, String email, int holidayEntitlement, int departmentID, int roleID) {
+        this(0, data, email, holidayEntitlement, departmentID, roleID); // Set a default value for UserID
     }
 
     public long getUserID() {
