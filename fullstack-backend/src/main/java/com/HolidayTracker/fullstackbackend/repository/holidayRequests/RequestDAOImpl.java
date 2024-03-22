@@ -119,7 +119,7 @@ public class RequestDAOImpl {
 
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setString(1, holidaysRequest.getData());
-        ps.setInt(2,holidaysRequest.getID());
+        ps.setInt(2,holidaysRequest.getUserID());
         ps.setInt(3,holidaysRequest.getManagerID());
         ps.setString(4, holidaysRequest.getRequestStatus());
         int result = ps.executeUpdate();
@@ -137,7 +137,7 @@ public class RequestDAOImpl {
         PreparedStatement ps = connection.prepareStatement(sql);
 
         ps.setString(1, holidaysRequest.getData());
-        ps.setInt(2,holidaysRequest.getID());
+        ps.setInt(2,holidaysRequest.getUserID());
         ps.setInt(3,holidaysRequest.getManagerID());
         ps.setString(4, holidaysRequest.getRequestStatus());
         ps.setInt(5,holidaysRequest.getHolidayRequestID());
