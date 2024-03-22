@@ -17,7 +17,6 @@ public class UserDaoImpl  {
 
         // SQL query to select user data based on user ID.
 
-
          String sql = "SELECT UserID,Data,Email,HolidayEntitlement,DepartmentID,RoleID FROM users WHERE UserID = ?"; // "Where id = ?" only retrieve rows where the value in the id column matches the value that we'll specify later
 
         //PreparedStatement is an object with a parameterized query (SELECT * FROM users WHERE UserID = ?). The value of the parameter (userId) is set using setInt() method before executing the query.
@@ -67,7 +66,7 @@ public class UserDaoImpl  {
             int DepartmentID = rs.getInt("DepartmentID");
             int RoleID = rs.getInt("RoleID");
 
-            User user = new User(UserID, Data, Email, DepartmentID, RoleID, HolidayEntitlement);
+            User user = new User(UserID,Data,Email,HolidayEntitlement,DepartmentID,RoleID);
 
             users.add(user);
         }
@@ -97,7 +96,7 @@ public class UserDaoImpl  {
                 int DepartmentID = rs.getInt("DepartmentID");
                 int RoleID = rs.getInt("RoleID");
 
-                User user = new User(UserID, Data, Email, DepartmentID, RoleID, HolidayEntitlement);
+                User user = new User(UserID,Data,Email,HolidayEntitlement,DepartmentID,RoleID);
                 users.add(user);
             }
             Database.closeResultSet(rs);
@@ -111,7 +110,7 @@ public class UserDaoImpl  {
 //1: connect to the database
         Connection con = Database.getConnection();
 //2:define SQL
-        String sql = "INSERT into users (Data,Email,HolidayEntitlement,DepartmentID,RoleID) VALUES(?,?::jsonb,?,?,?,?) ";
+        String sql = "INSERT into users (Data,Email,HolidayEntitlement,DepartmentID,RoleID) VALUES(?::jsonb,?,?,?,?) ";
 //3:Prepare statement
         PreparedStatement ps = con.prepareStatement(sql);
 //4:  Sets the user parameters in the SQL query.
@@ -135,7 +134,7 @@ public class UserDaoImpl  {
     public int update(User user) throws SQLException {
         Connection connection = Database.getConnection();
 
-        String sql = "UPDATE users set  Data = ?::jsonb, Email = ?, HolidayEntitlement = ?, DepartmentID = ?, RoleID = ? where UserID =? ";
+        String sql = "UPDATE users SET Data = ?::jsonb, Email = ?, HolidayEntitlement = ?, DepartmentID = ?, RoleID = ? WHERE UserID = ?";
 
         PreparedStatement ps = connection.prepareStatement(sql);
 
@@ -144,6 +143,7 @@ public class UserDaoImpl  {
         ps.setInt(3, user.getHolidayEntitlement());
         ps.setInt(4, user.getDepartmentID());
         ps.setInt(5, user.getRoleID());
+        ps.setInt(6, (int) user.getUserID()); // Setting UserID parameter
 
         int result = ps.executeUpdate();
 
@@ -152,6 +152,7 @@ public class UserDaoImpl  {
 
         return result;
     }
+
 
     public int delete(int id) throws SQLException {
 
