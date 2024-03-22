@@ -15,7 +15,8 @@ public class User {
     private int RoleID;
 
     //Add constructor overload
-
+    public User() {
+    }
     public User(int userID, String data, String email, int holidayEntitlement, int departmentID, int roleID){
         this.UserID = userID;
         this.Data = data;

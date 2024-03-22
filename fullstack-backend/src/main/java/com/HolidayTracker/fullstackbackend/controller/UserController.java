@@ -29,9 +29,9 @@ public class UserController {
         return userDaoImpl.insert(newUser);
     }
 
-    @PutMapping("/UpdateUser")
-    public int updateUser(@PathVariable int id, @RequestBody User user) throws SQLException {
-        user.setUserID(id);
+    @PutMapping("/UpdateUser/{userId}")
+    public int updateUser(@PathVariable int userId, @RequestBody User user) throws SQLException {
+        user.setUserID(userId);
         return userDaoImpl.update(user);
     }
 
