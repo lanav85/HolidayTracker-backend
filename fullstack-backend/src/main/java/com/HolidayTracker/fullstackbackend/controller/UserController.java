@@ -1,7 +1,7 @@
 package com.HolidayTracker.fullstackbackend.controller;
 
 import com.HolidayTracker.fullstackbackend.model.User;
-import com.HolidayTracker.fullstackbackend.repository.user.UserDaoImpl;
+import com.HolidayTracker.fullstackbackend.repository.user.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +13,11 @@ import java.util.List;
 @RestController
 public class UserController {
     @Autowired
-    private UserDaoImpl userDaoImpl;
+    private UserDao userDaoImpl;
 
     @GetMapping("/RetrieveUserbyID/{userId}")
     public User getUserById(@PathVariable("userId") int userId) throws SQLException {
-        return userDaoImpl.get(userId); // Assuming userDaoImpl is your DAO implementation
+        return userDaoImpl.get(userId);
     }
 
 

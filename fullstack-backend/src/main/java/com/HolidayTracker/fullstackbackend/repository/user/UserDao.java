@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class UserDaoImpl  {
+public class UserDao {
      //CRUD - Retrieve
     // This method retrieves a user from the database based on the provided user ID.
      public User get(int id) throws SQLException {
