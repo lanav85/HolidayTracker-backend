@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 public class UserDao {
-     //CRUD - Retrieve
+     //CRUD - Retrieve user by userID
     // This method retrieves a user from the database based on the provided user ID.
      public User get(int id) throws SQLException {
         Connection con = Database.getConnection(); // Establishes a database connection.
@@ -45,9 +45,7 @@ public class UserDao {
         // Returns the retrieved User object, or null if no user was found.
         return user;
     }
-
-    //CRUD -retrieve all
-
+    //CRUD -retrieve all users
     public List<User> getAll() throws SQLException {
         Connection con = Database.getConnection();
         String sql = "SELECT UserID,Data,Email,HolidayEntitlement,DepartmentID,RoleID FROM users ";
@@ -75,7 +73,7 @@ public class UserDao {
         Database.closeConnection(con);
         return users;
     }
-    //get list of user by department ID
+    //get list of users by department ID
     public List<User> getAllUsersByDepartmentID(int departmentID) throws SQLException {
             Connection con = Database.getConnection();
             String sql = "SELECT UserID,Data,Email,HolidayEntitlement,DepartmentID,RoleID FROM users WHERE DepartmentID = ?";
@@ -105,7 +103,7 @@ public class UserDao {
 
             return users;
     }
-    // CRUD - Create
+    // Create new user
     public int insert(User user) throws SQLException {
 //1: connect to the database
         Connection con = Database.getConnection();
@@ -129,8 +127,7 @@ public class UserDao {
         return result;
 
     }
-
-
+    // Update user
     public int update(User user) throws SQLException {
         Connection connection = Database.getConnection();
 
@@ -151,8 +148,7 @@ public class UserDao {
         Database.closeConnection(connection);
         return result;
     }
-
-
+    //Delete User
     public int delete(int id) throws SQLException {
 
         Connection connection = Database.getConnection();

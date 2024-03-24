@@ -16,7 +16,6 @@ public class HolidayRequestController {
     @Autowired
     private HolidayRequestDAO holidayRequestDAO;
 
-
     @GetMapping("/RetrieveHolidayRequestbyID/{userId}")
     public HolidaysRequest getHolidayRequestbyID(@PathVariable("userId") int userId) throws SQLException {
         return holidayRequestDAO.get(userId);
@@ -25,13 +24,13 @@ public class HolidayRequestController {
 
     @GetMapping("/RetrieveAllholidayRequestS")
     public List<HolidaysRequest> getAll() throws SQLException {
-        return holidayRequestDAO.getAll();
+        return holidayRequestDAO.getAllHolidayRequests();
     }
 
     @PostMapping("/CreateNewHolidayRequest")
     public ResponseEntity<Object> createUser(@RequestBody HolidaysRequest holidaysRequest) {
         try {
-            int result = holidayRequestDAO.insert(holidaysRequest);
+            int result = holidayRequestDAO.createHolidayRequest(holidaysRequest);
             if (result > 0) {
                 return new ResponseEntity<>("Holiday Request successfully created", HttpStatus.OK);
             } else {
