@@ -1,5 +1,7 @@
 package com.HolidayTracker.fullstackbackend.model;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +12,7 @@ public class HolidaysRequest {
 
     private int requestID;
     private int userID;
-    private Date requestFrom;
+   private Date requestFrom;
     private Date requestTo;
     private String status;
 
@@ -53,16 +55,16 @@ public class HolidaysRequest {
         this.userID = userID;
     }
 
-    public java.sql.Date getRequestFrom() {
-        return (java.sql.Date) requestFrom;
+    public Date getRequestFrom() {
+        return requestFrom;
     }
 
     public void setRequestFrom(Date requestFrom) {
         this.requestFrom = requestFrom;
     }
 
-    public java.sql.Date getRequestTo() {
-        return (java.sql.Date) requestTo;
+    public Date getRequestTo() {
+        return requestTo;
     }
 
     public void setRequestTo(Date requestTo) {

@@ -179,8 +179,6 @@ public class HolidayRequestDAO {
         return holidayRequests;
     }
 
-
-
     // Create new holiday request
     public int createHolidayRequest(HolidaysRequest request) throws SQLException {
         Connection con = Database.getConnection();
