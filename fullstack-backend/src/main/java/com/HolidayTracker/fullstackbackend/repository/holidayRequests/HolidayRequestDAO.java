@@ -160,7 +160,7 @@ public class HolidayRequestDAO {
     public int deleteHolidayRequests(int id) throws SQLException {
 
         Connection connection = Database.getConnection();
-        String sql = "DELETE from users where RequestID  =? ";
+        String sql = "DELETE from Requests where RequestID  = ? ";
         PreparedStatement ps = connection.prepareStatement(sql);
 
         ps.setInt(1, id);
