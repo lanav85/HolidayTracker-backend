@@ -2,10 +2,14 @@ package com.HolidayTracker.fullstackbackend.util;
 
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.User;
+import com.HolidayTracker.fullstackbackend.repository.Database;
 import com.HolidayTracker.fullstackbackend.repository.holidayRequests.HolidayRequestDAO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -29,6 +33,9 @@ public class HolidayRequestValidator {
             if (requestFrom.before(tomorrow)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Holiday request must be made at least one day in advance.");
             }
+            if (hasOverlappingRequests(holidaysRequest)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Overlapping holiday requests detected.");
+            }
 
             // check if Holiday Balance is valid
             long totalWorkingDays = countWeekdays(requestFrom, requestTo);
@@ -36,7 +43,6 @@ public class HolidayRequestValidator {
             if (holidayEntitlement < totalWorkingDays) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient holiday balance.");
             }
-
             // If all validations pass, return a success response
             return ResponseEntity.ok("Holiday request validated successfully.");
 
@@ -63,4 +69,16 @@ public class HolidayRequestValidator {
         }
         return weekdays;
     }
+  public long  hasOverlappingRequests() throws SQLException {
+      Connection con = Database.getConnection();
+      HolidaysRequest holidayRequests = null;
+
+      String sql = "SELECT RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ?  AND status = 'pending' OR status = 'accepted'";
+
+
+
+
+
+      return 0;
+  }
 }
