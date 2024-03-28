@@ -1,7 +1,6 @@
 package com.HolidayTracker.fullstackbackend.model;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +15,7 @@ public class HolidaysRequest {
     private Date requestTo;
     private String status;
 
-    public HolidaysRequest(){
+    public HolidaysRequest(Date requestFrom, Date requestTo){
 
     }
 
