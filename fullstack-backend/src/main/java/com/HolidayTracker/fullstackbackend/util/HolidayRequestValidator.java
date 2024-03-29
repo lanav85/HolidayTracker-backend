@@ -7,7 +7,6 @@ import com.HolidayTracker.fullstackbackend.repository.holidayRequests.HolidayReq
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,16 +35,19 @@ public class HolidayRequestValidator {
             if (requestFrom.before(tomorrow)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Holiday request must be made at least one day in advance.");
             }
+
             // check if Holiday Balance is valid
             long totalWorkingDays = countWeekdays(requestFrom, requestTo);
             int holidayEntitlement = user.getHolidayEntitlement();
             if (holidayEntitlement < totalWorkingDays) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient holiday balance.");
             }
-            //Check if the requested dates overlap with accepted and pending dates
-            if (hasOverlappingRequests(holidaysRequest)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Overlapping holiday requests detected.");
+
+            // Check for overlapping holiday requests
+            if (hasOverlappingRequests(requestFrom, requestTo, (int) user.getUserID()) == true) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Overlapping holiday requests.");
             }
+
             // If all validations pass, return a success response
             return ResponseEntity.ok("Holiday request validated successfully.");
 
