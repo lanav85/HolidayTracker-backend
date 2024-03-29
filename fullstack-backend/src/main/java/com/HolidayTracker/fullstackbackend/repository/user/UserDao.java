@@ -135,7 +135,6 @@ public class UserDao {
 
         PreparedStatement ps = connection.prepareStatement(sql);
 
-        ps.setString(1, user.getData());
         ps.setString(2, user.getEmail());
         ps.setInt(3, user.getHolidayEntitlement());
         ps.setInt(4, user.getDepartmentID());

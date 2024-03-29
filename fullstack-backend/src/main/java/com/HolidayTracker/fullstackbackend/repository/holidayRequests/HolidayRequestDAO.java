@@ -1,5 +1,6 @@
 package com.HolidayTracker.fullstackbackend.repository.holidayRequests;
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
+import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 import org.springframework.stereotype.Repository;
 import java.sql.*;
@@ -167,6 +168,24 @@ public class HolidayRequestDAO {
 
         int result = ps.executeUpdate();
 
+        Database.closePreparedStatement(ps);
+        Database.closeConnection(connection);
+
+        return result;
+    }
+    public int UpdateHolidayRequestStatus(HolidaysRequest holidaysRequest) throws SQLException {
+        Connection connection = Database.getConnection();
+        String sql = "UPDATE Requests SET Status = ? WHERE RequestID = ?";
+
+        PreparedStatement ps = connection.prepareStatement(sql);
+
+        // Set parameters for the update query
+        ps.setString(1, holidaysRequest.getStatus());
+        ps.setInt(2, holidaysRequest.getRequestID());
+
+        int result = ps.executeUpdate();
+
+        // Close resources
         Database.closePreparedStatement(ps);
         Database.closeConnection(connection);
 

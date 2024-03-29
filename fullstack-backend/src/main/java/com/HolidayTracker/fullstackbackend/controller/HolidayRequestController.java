@@ -1,5 +1,6 @@
 package com.HolidayTracker.fullstackbackend.controller;
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
+import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.holidayRequests.HolidayRequestDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -94,7 +95,11 @@ public class HolidayRequestController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
+    @PutMapping("/UpdateHolidayRequestStatus/{RequestID}")
+    public int UpdateHolidayRequestStatus(@PathVariable int RequestID, @RequestBody HolidaysRequest holidaysRequest) throws SQLException {
+        holidaysRequest.setRequestID(RequestID);
+        return holidayRequestDAO.UpdateHolidayRequestStatus(holidaysRequest);
+    }
     @DeleteMapping("/DeleteHolidayRequest/{requestID}")
     public ResponseEntity<Object> deleteHolidayRequest(@PathVariable("requestID") int requestID) {
         try {
