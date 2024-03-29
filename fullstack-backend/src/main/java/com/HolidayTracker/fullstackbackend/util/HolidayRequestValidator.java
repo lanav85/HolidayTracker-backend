@@ -1,4 +1,5 @@
 package com.HolidayTracker.fullstackbackend.util;
+
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
@@ -6,14 +7,12 @@ import com.HolidayTracker.fullstackbackend.repository.holidayRequests.HolidayReq
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class HolidayRequestValidator {
@@ -37,15 +36,15 @@ public class HolidayRequestValidator {
             if (requestFrom.before(tomorrow)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Holiday request must be made at least one day in advance.");
             }
-            if (hasOverlappingRequests(holidaysRequest)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Overlapping holiday requests detected.");
-            }
-
             // check if Holiday Balance is valid
             long totalWorkingDays = countWeekdays(requestFrom, requestTo);
             int holidayEntitlement = user.getHolidayEntitlement();
             if (holidayEntitlement < totalWorkingDays) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient holiday balance.");
+            }
+            //Check if the requested dates overlap with accepted and pending dates
+            if (hasOverlappingRequests(holidaysRequest)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Overlapping holiday requests detected.");
             }
             // If all validations pass, return a success response
             return ResponseEntity.ok("Holiday request validated successfully.");
@@ -96,9 +95,23 @@ public class HolidayRequestValidator {
         Database.closeConnection(con);
         return RequestDates;
     }
-    public boolean hasOverlappingRequests (){
 
+    public boolean hasOverlappingRequests(Date newRequestFrom, Date newRequestTo, int userID) throws SQLException {
+        List<HolidaysRequest> previousHolidayRequests = getHolidayRequestDates(userID);
+        // Sort holiday requests by start date. It will allow stopping iterating through the list once it reaches requests that start after newRequestTo.
+        Collections.sort(previousHolidayRequests, Comparator.comparing(HolidaysRequest::getRequestFrom));
+        boolean overlapFound = false;
 
-        return false;
+        // Iterate through each holiday request in the sorted list "previousHolidayRequests"
+        for (HolidaysRequest previousRequest : previousHolidayRequests) {
+            // If an old request starts after the new requested range or ends before the new requested range, no overlap
+            if (previousRequest.getRequestFrom().after(newRequestTo) || previousRequest.getRequestTo().before(newRequestFrom)) {
+
+            } else {
+                overlapFound = true;
+                break;
+            }
+        }
+        return overlapFound;
     }
 }
