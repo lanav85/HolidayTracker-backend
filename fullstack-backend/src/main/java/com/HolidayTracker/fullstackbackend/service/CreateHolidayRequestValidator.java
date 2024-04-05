@@ -1,9 +1,10 @@
-package com.HolidayTracker.fullstackbackend.util;
+package com.HolidayTracker.fullstackbackend.service;
 
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 import com.HolidayTracker.fullstackbackend.repository.holidayRequests.HolidayRequestDAO;
+import com.HolidayTracker.fullstackbackend.repository.user.UserDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -14,14 +15,17 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Component
-public class HolidayRequestValidator {
+public class CreateHolidayRequestValidator {
     private final HolidayRequestDAO holidayRequestDAO;
+    private final UserDao userDao;
 
-    public HolidayRequestValidator(HolidayRequestDAO holidayRequestDAO) {
+
+    public CreateHolidayRequestValidator(HolidayRequestDAO holidayRequestDAO, UserDao userDao) {
         this.holidayRequestDAO = holidayRequestDAO;
+        this.userDao = userDao;
     }
 
-    public ResponseEntity<Object> validateHolidayRequest(HolidaysRequest holidaysRequest, User user) {
+    public ResponseEntity<Object> validateHolidayRequest(HolidaysRequest holidaysRequest) {
         try {
             Date requestFrom = holidaysRequest.getRequestFrom();
             Date requestTo = holidaysRequest.getRequestTo();
@@ -36,7 +40,14 @@ public class HolidayRequestValidator {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Holiday request must be made at least one day in advance.");
             }
 
-            // check if Holiday Balance is valid
+            // Retrieve user from the database
+            int userId = holidaysRequest.getUserID();
+            User user = userDao.get(userId);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found.");
+            }
+
+            // Check if Holiday Balance is enough
             long totalWorkingDays = countWeekdays(requestFrom, requestTo);
             int holidayEntitlement = user.getHolidayEntitlement();
             if (holidayEntitlement < totalWorkingDays) {
@@ -44,7 +55,7 @@ public class HolidayRequestValidator {
             }
 
             // Check for overlapping holiday requests
-            if (hasOverlappingRequests(requestFrom, requestTo, (int) user.getUserID()) == true) {
+            if (hasOverlappingRequests(requestFrom, requestTo, userId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Overlapping holiday requests.");
             }
 
@@ -79,7 +90,7 @@ public class HolidayRequestValidator {
     public List<HolidaysRequest> getHolidayRequestDates(int UserID) throws SQLException {
         Connection con = Database.getConnection();
 
-        String sql = "SELECT RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ?  AND status = 'pending' OR status = 'accepted'";
+        String sql = "SELECT RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ?  AND (status = 'pending' OR status = 'accepted')";
         List<HolidaysRequest> RequestDates = new ArrayList<>();
 
         PreparedStatement ps = con.prepareStatement(sql);
@@ -106,10 +117,8 @@ public class HolidayRequestValidator {
 
         // Iterate through each holiday request in the sorted list "previousHolidayRequests"
         for (HolidaysRequest previousRequest : previousHolidayRequests) {
-            // If an old request starts after the new requested range or ends before the new requested range, no overlap
-            if (previousRequest.getRequestFrom().after(newRequestTo) || previousRequest.getRequestTo().before(newRequestFrom)) {
-
-            } else {
+            // If an old request overlaps with the new requested range, set overlapFound to true
+            if (previousRequest.getRequestFrom().before(newRequestTo) && previousRequest.getRequestTo().after(newRequestFrom)) {
                 overlapFound = true;
                 break;
             }

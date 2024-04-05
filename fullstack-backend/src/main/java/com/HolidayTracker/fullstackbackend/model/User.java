@@ -25,11 +25,11 @@ public class User {
         this.DepartmentID = departmentID;
         this.RoleID = roleID;
     }
-    public User(String data, String email, int holidayEntitlement, int departmentID, int roleID) {
-        this(0, data, email, holidayEntitlement, departmentID, roleID); // Set a default value for UserID
-    }
+   // public User(String data, String email, int holidayEntitlement, int departmentID, int roleID) {
+     //  this(0, data, email, holidayEntitlement, departmentID, roleID); // Set a default value for UserID
+  // }
 
-    public long getUserID() {
+    public int getUserID() {
         return UserID;
     }
 

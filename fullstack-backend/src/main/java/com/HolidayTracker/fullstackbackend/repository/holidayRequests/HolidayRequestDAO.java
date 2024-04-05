@@ -2,6 +2,7 @@ package com.HolidayTracker.fullstackbackend.repository.holidayRequests;
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
+import com.HolidayTracker.fullstackbackend.service.CreateHolidayRequestValidator;
 import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.ArrayList;
@@ -141,23 +142,7 @@ public class HolidayRequestDAO {
         return holidayRequests;
 
     }
-    // Create new holiday request
-    public int createHolidayRequest(HolidaysRequest request) throws SQLException {
-        Connection con = Database.getConnection();
-        String sql = "INSERT INTO Requests (UserID, RequestFrom, RequestTo, Status) VALUES (?, ?, ?, ?)";
-
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, request.getUserID());
-        ps.setDate(2, new java.sql.Date(request.getRequestFrom().getTime()));
-        ps.setDate(3, new java.sql.Date(request.getRequestTo().getTime()));
-        ps.setString(4, request.getStatus());
-
-        int result = ps.executeUpdate();
-        Database.closePreparedStatement(ps);
-        Database.closeConnection(con);
-        return result;
-    }
-    // Delete holiday request
+      // Delete holiday request
     public int deleteHolidayRequests(int id) throws SQLException {
 
         Connection connection = Database.getConnection();
@@ -173,6 +158,7 @@ public class HolidayRequestDAO {
 
         return result;
     }
+    //Update Holiday Request Status
     public int UpdateHolidayRequestStatus(HolidaysRequest holidaysRequest) throws SQLException {
         Connection connection = Database.getConnection();
         String sql = "UPDATE Requests SET Status = ? WHERE RequestID = ?";
@@ -191,4 +177,24 @@ public class HolidayRequestDAO {
 
         return result;
     }
+    // Create new holiday request
+    // Inside HolidayRequestDAO class
+    // Create new holiday request
+    public int createHolidayRequest(HolidaysRequest request) throws SQLException {
+        Connection con = Database.getConnection();
+        String sql = "INSERT INTO Requests (UserID, RequestFrom, RequestTo, Status) VALUES (?, ?, ?, ?)";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, request.getUserID());
+        ps.setDate(2, new java.sql.Date(request.getRequestFrom().getTime()));
+        ps.setDate(3, new java.sql.Date(request.getRequestTo().getTime()));
+        ps.setString(4, request.getStatus());
+
+        int result = ps.executeUpdate();
+        Database.closePreparedStatement(ps);
+        Database.closeConnection(con);
+        return result;
+    }
+
+
 }

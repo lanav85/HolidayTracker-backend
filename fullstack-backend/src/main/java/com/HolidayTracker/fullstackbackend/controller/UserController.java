@@ -20,12 +20,10 @@ public class UserController {
         return userDaoImpl.get(userId);
     }
 
-
     @GetMapping("/RetrieveAllUsers")
     public List<User> getAll() throws SQLException {
         return userDaoImpl.getAll();
     }
-
     @PostMapping("/CreateNewUser")
     public ResponseEntity<Object> createUser(@RequestBody User newUser) {
         try {

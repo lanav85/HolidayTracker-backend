@@ -10,14 +10,14 @@ import java.util.List;
 @Component
 public class UserDao {
      //CRUD - Retrieve user by userID
-    // This method retrieves a user from the database based on the provided user ID.
+    // This method retrieves a user from the database by user ID.
      public User get(int id) throws SQLException {
         Connection con = Database.getConnection(); // Establishes a database connection.
         User user = null;         // Initializes a User
 
         // SQL query to select user data based on user ID.
 
-         String sql = "SELECT UserID,Data,Email,HolidayEntitlement,DepartmentID,RoleID FROM users WHERE UserID = ?"; // "Where id = ?" only retrieve rows where the value in the id column matches the value that we'll specify later
+         String sql = "SELECT UserID,Data,Email,HolidayEntitlement,RoleID,DepartmentID FROM users WHERE UserID = ?"; // "Where id = ?" only retrieve rows where the value in the id column matches the value that we'll specify later
 
         //PreparedStatement is an object with a parameterized query (SELECT * FROM users WHERE UserID = ?). The value of the parameter (userId) is set using setInt() method before executing the query.
         PreparedStatement ps = con.prepareStatement(sql);  // the sql is passed as an argument to the prepareStatement() method to create the PreparedStatement object ps.
@@ -32,11 +32,13 @@ public class UserDao {
             String Data = rs.getString("Data");
             String Email = rs.getString("Email");
             int HolidayEntitlement = rs.getInt("HolidayEntitlement");
-            int DepartmentID = rs.getInt("DepartmentID");
             int RoleID = rs.getInt("RoleID");
+            int DepartmentID = rs.getInt("DepartmentID");
+
 
             // Creates a new User object with the retrieved data.
-            user = new User(UserID, Data, Email, DepartmentID, RoleID, HolidayEntitlement);
+           user = new User(UserID, Data, Email, HolidayEntitlement,RoleID, DepartmentID );
+
         }
         // Closes the result set, prepared statement, and database connection to release resources.
         Database.closeResultSet(rs);
@@ -64,7 +66,7 @@ public class UserDao {
             int DepartmentID = rs.getInt("DepartmentID");
             int RoleID = rs.getInt("RoleID");
 
-            User user = new User(UserID,Data,Email,HolidayEntitlement,DepartmentID,RoleID);
+            User user = new User(UserID, Data, Email, DepartmentID, RoleID, HolidayEntitlement);
 
             users.add(user);
         }
@@ -135,12 +137,12 @@ public class UserDao {
 
         PreparedStatement ps = connection.prepareStatement(sql);
 
+        ps.setString(1, user.getData());
         ps.setString(2, user.getEmail());
         ps.setInt(3, user.getHolidayEntitlement());
         ps.setInt(4, user.getDepartmentID());
         ps.setInt(5, user.getRoleID());
-        ps.setInt(6, (int) user.getUserID()); // Setting UserID parameter
-
+        ps.setInt(6, user.getUserID());
         int result = ps.executeUpdate();
 
         Database.closePreparedStatement(ps);
