@@ -1,9 +1,11 @@
 package com.HolidayTracker.fullstackbackend.repository.holidayRequests;
+
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 import com.HolidayTracker.fullstackbackend.service.CreateHolidayRequestValidator;
 import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,48 +39,53 @@ public class HolidayRequestDAO {
 
     }
     // Get holiday request by ID
-    public HolidaysRequest getHolidayRequestByID(int id) throws SQLException {
+    public List <HolidaysRequest> getHolidayRequestByID(int id) throws SQLException {
         Connection con = Database.getConnection(); // Establishes a database connection.
-        HolidaysRequest holidaysRequest = null;
-
         String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE RequestID = ?";
+
+        List<HolidaysRequest> holidayRequests = new ArrayList<>();
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             int requestID = rs.getInt("RequestID");
             int userID = rs.getInt("UserID");
             Date requestFrom = rs.getDate("RequestFrom");
             Date requestTo = rs.getDate("RequestTo");
             String status = rs.getString("Status");
 
-            holidaysRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            holidayRequests.add(holidayRequest);
+
         }
         // Closes the result set, prepared statement, and database connection to release resources.
         Database.closeResultSet(rs);
         Database.closePreparedStatement(ps);
         Database.closeConnection(con);
         // Returns the retrieved User object, or null if no user was found.
-        return holidaysRequest;
+        return holidayRequests;
     }
     // Get holiday requests by userID
-    public HolidaysRequest getHolidayRequestsByUserID(int userID) throws SQLException {
+    public List <HolidaysRequest> getHolidayRequestsByUserID(int userID) throws SQLException {
         Connection con = Database.getConnection();
-        HolidaysRequest holidayRequests = null;
 
         String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ?";
+        List<HolidaysRequest> holidayRequests = new ArrayList<>();
+
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setInt(1, userID);
         ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             int requestID = rs.getInt("RequestID");
             Date requestFrom = rs.getDate("RequestFrom");
             Date requestTo = rs.getDate("RequestTo");
             String status = rs.getString("Status");
 
-            holidayRequests = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            holidayRequests.add(holidayRequest);
+
         }
         Database.closeResultSet(rs);
         Database.closePreparedStatement(ps);
@@ -87,23 +94,25 @@ public class HolidayRequestDAO {
         return holidayRequests;
     }
     // Get holiday requests by status
-    public HolidaysRequest getHolidayRequestsByStatus(String status) throws SQLException {
+    public List<HolidaysRequest> getHolidayRequestsByStatus(String status) throws SQLException {
         Connection con = Database.getConnection();
-        HolidaysRequest holidayRequests = null;
 
         String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE Status = ?";
+        List<HolidaysRequest> holidayRequests = new ArrayList<>();
 
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setString(1, status);
         ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             int requestID = rs.getInt("RequestID");
             int userID = rs.getInt("UserID");
             Date requestFrom = rs.getDate("RequestFrom");
             Date requestTo = rs.getDate("RequestTo");
 
-            holidayRequests = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            holidayRequests.add(holidayRequest);
+
         }
         Database.closeResultSet(rs);
         Database.closePreparedStatement(ps);
@@ -113,7 +122,7 @@ public class HolidayRequestDAO {
     //Get Holiday Request by department
     public List<HolidaysRequest> getHolidayRequestsByDepartmentID(int departmentID) throws SQLException {
         Connection con = Database.getConnection();
-        String sql =  "SELECT Requests.RequestID, Requests.UserID, Requests.RequestFrom, Requests.RequestTo, Requests.Status " +
+        String sql = "SELECT Requests.RequestID, Requests.UserID, Requests.RequestFrom, Requests.RequestTo, Requests.Status " +
                 "FROM Requests " +
                 "JOIN Users ON Requests.UserID = Users.UserID " +
                 "JOIN Department ON Users.DepartmentID = Department.DepartmentID " +
@@ -142,7 +151,8 @@ public class HolidayRequestDAO {
         return holidayRequests;
 
     }
-      // Delete holiday request
+
+    // Delete holiday request
     public int deleteHolidayRequests(int id) throws SQLException {
 
         Connection connection = Database.getConnection();
@@ -158,6 +168,7 @@ public class HolidayRequestDAO {
 
         return result;
     }
+
     //Update Holiday Request Status
     public int UpdateHolidayRequestStatus(HolidaysRequest holidaysRequest) throws SQLException {
         Connection connection = Database.getConnection();
@@ -177,6 +188,7 @@ public class HolidayRequestDAO {
 
         return result;
     }
+
     // Create new holiday request
     // Inside HolidayRequestDAO class
     // Create new holiday request

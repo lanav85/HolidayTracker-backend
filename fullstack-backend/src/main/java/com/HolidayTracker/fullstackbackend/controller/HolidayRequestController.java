@@ -39,7 +39,7 @@ public class HolidayRequestController {
     @GetMapping("/RetrieveHolidayRequestbyID/{id}")
     public ResponseEntity<Object> getHolidayRequestByID(@PathVariable int id) {
         try {
-            HolidaysRequest holidayRequest = holidayRequestDAO.getHolidayRequestByID(id);
+            List <HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestByID(id);
             if (holidayRequest != null) {
                 return ResponseEntity.ok().body(holidayRequest);
             } else {
@@ -53,7 +53,7 @@ public class HolidayRequestController {
     @GetMapping("/RetrieveHolidayRequestByUserID/{userID}")
     public ResponseEntity<Object> getHolidayRequestsByUserID(@PathVariable int userID) {
         try {
-            HolidaysRequest holidayRequest = holidayRequestDAO.getHolidayRequestsByUserID(userID);
+            List <HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestsByUserID(userID);
             if (holidayRequest != null) {
                 return ResponseEntity.ok().body(holidayRequest);
             } else {
@@ -67,7 +67,7 @@ public class HolidayRequestController {
     @GetMapping("/RetrieveHolidayRequestByStatus/{status}")
     public ResponseEntity<Object> getHolidayRequestsByStatus(@PathVariable String status) {
         try {
-            HolidaysRequest holidayRequest = holidayRequestDAO.getHolidayRequestsByStatus(status);
+           List <HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestsByStatus(status);
             if (holidayRequest != null) {
                 return ResponseEntity.ok().body(holidayRequest);
             } else {

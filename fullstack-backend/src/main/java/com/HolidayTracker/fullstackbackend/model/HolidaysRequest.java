@@ -12,7 +12,7 @@ public class HolidaysRequest {
 
     private int requestID;
     private int userID;
-   private Date requestFrom;
+    private Date requestFrom;
     private Date requestTo;
     private String status;
 
@@ -29,7 +29,7 @@ public class HolidaysRequest {
     }
 
     public HolidaysRequest(int userID, Date requestFrom, Date requestTo, String status) {
-   this(0,userID,requestFrom,requestTo,status);
+        this(0,userID,requestFrom,requestTo,status);
     }
   /*  public HolidaysRequest(int userID, Date requestFrom, Date requestTo, String status) {
         this.userID = userID;

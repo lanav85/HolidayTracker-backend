@@ -87,42 +87,55 @@ public class CreateHolidayRequestValidator {
         return weekdays;
     }
 
-    public List<HolidaysRequest> getHolidayRequestDates(int UserID) throws SQLException {
-        Connection con = Database.getConnection();
+    public HolidaysRequest getHolidayRequestDates(int id) throws SQLException {
+        Connection con = Database.getConnection(); // Establishes a database connection.
+        HolidaysRequest holidaysRequest = null;
 
-        String sql = "SELECT RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ?  AND (status = 'pending' OR status = 'accepted')";
-        List<HolidaysRequest> RequestDates = new ArrayList<>();
-
+        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE RequestID = ?";
         PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, UserID);
+        ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
+
+        if (rs.next()) {
+            int requestID = rs.getInt("RequestID");
+            int userID = rs.getInt("UserID");
             Date requestFrom = rs.getDate("RequestFrom");
             Date requestTo = rs.getDate("RequestTo");
-            // Create a HolidaysRequest object and add it to the list
-            HolidaysRequest request = new HolidaysRequest(requestFrom, requestTo);
-            RequestDates.add(request);
+            String status = rs.getString("Status");
+
+            holidaysRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
         }
+        // Closes the result set, prepared statement, and database connection to release resources.
         Database.closeResultSet(rs);
         Database.closePreparedStatement(ps);
         Database.closeConnection(con);
-        return RequestDates;
+        // Returns the retrieved User object, or null if no user was found.
+        return holidaysRequest;
     }
 
     public boolean hasOverlappingRequests(Date newRequestFrom, Date newRequestTo, int userID) throws SQLException {
-        List<HolidaysRequest> previousHolidayRequests = getHolidayRequestDates(userID);
-        // Sort holiday requests by start date. It will allow stopping iterating through the list once it reaches requests that start after newRequestTo.
-        Collections.sort(previousHolidayRequests, Comparator.comparing(HolidaysRequest::getRequestFrom));
+        List<HolidaysRequest> previousHolidayRequests = (List<HolidaysRequest>) getHolidayRequestDates(userID);
         boolean overlapFound = false;
 
-        // Iterate through each holiday request in the sorted list "previousHolidayRequests"
         for (HolidaysRequest previousRequest : previousHolidayRequests) {
-            // If an old request overlaps with the new requested range, set overlapFound to true
-            if (previousRequest.getRequestFrom().before(newRequestTo) && previousRequest.getRequestTo().after(newRequestFrom)) {
+            Date existingRequestFrom = previousRequest.getRequestFrom();
+            Date existingRequestTo = previousRequest.getRequestTo();
+
+            // Check if either existingRequestFrom or existingRequestTo is null
+            if (existingRequestFrom == null || existingRequestTo == null) {
+                // Handle the case where existingRequestFrom or existingRequestTo is null
+                // You may want to log a warning or handle this case according to your application logic
+                continue;
+            }
+
+            // Check for overlap
+            if (newRequestFrom.before(existingRequestTo) && newRequestTo.after(existingRequestFrom)) {
                 overlapFound = true;
                 break;
             }
         }
         return overlapFound;
     }
+
+
 }
