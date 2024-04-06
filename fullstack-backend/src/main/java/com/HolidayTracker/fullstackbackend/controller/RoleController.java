@@ -1,7 +1,7 @@
 package com.HolidayTracker.fullstackbackend.controller;
 
-import com.HolidayTracker.fullstackbackend.model.User;
-import com.HolidayTracker.fullstackbackend.repository.user.UserDao;
+import com.HolidayTracker.fullstackbackend.model.Role;
+import com.HolidayTracker.fullstackbackend.repository.role.RoleDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,57 +12,64 @@ import java.util.List;
 
 @RestController
 public class RoleController {
-    @Autowired
-    private RoleDao RoleDaoImpl;
 
-    @GetMapping("/RetrieveRolebyID/{userId}")
-    public User getRoleById(@PathVariable("userId") int userId) throws SQLException {
-        return RoleDaoImpl.get(userId);
+    @Autowired
+    private RoleDao roleDao;
+
+    @GetMapping("/RetrieveRolebyID/{roleId}")
+    public Role getRoleById(@PathVariable("roleId") int roleId) throws SQLException {
+        return roleDao.get(roleId);
     }
 
-
     @GetMapping("/RetrieveAllRoles")
-    public List<Role> getAll() throws SQLException {
-        return RoleDaoImpl.getAll();
+    public List<Role> getAllRoles() throws SQLException {
+        return roleDao.getAll();
     }
 
     @PostMapping("/CreateNewRole")
     public ResponseEntity<Object> createRole(@RequestBody Role newRole) {
         try {
-            int result = RoleDaoImpl.insert(newRole);
+            int result = roleDao.insert(newRole);
             if (result > 0) {
                 return new ResponseEntity<>("Role successfully created", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Unable to create role", HttpStatus.BAD_REQUEST);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("/UpdateRole/{roleId}")
-    public int updateRole(@PathVariable int roleId, @RequestBody User user) throws SQLException {
-        role.setRoleID(roleId);
-        return RoleDaoImpl.update(role);
+    public ResponseEntity<Object> updateRole(@PathVariable int roleId, @RequestBody Role role) {
+        try {
+            role.setRoleID(roleId);
+            int result = roleDao.update(role);
+            if (result > 0) {
+                return new ResponseEntity<>("Role successfully updated", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Unable to update role", HttpStatus.BAD_REQUEST);
+            }
+        } catch (SQLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/DeleteRole/{roleId}")
-    public ResponseEntity<Object> deleteRoleById(@PathVariable int roleId) throws SQLException {
-
-        Role role = RoleDaoImpl.get(roleId);
-
+    public ResponseEntity<Object> deleteRoleById(@PathVariable int roleId) {
         try {
-            int result = RoleDaoImpl.delete(roleId);
+            int result = roleDao.delete(roleId);
             if (result > 0) {
                 return new ResponseEntity<>("Role successfully deleted", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Unable to delete role", HttpStatus.BAD_REQUEST);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }
+
         /*if (user.getUserType().equals("HRManager")) {
             System.out.println("The HRManager cannot be deleted from the system");
             return 0;

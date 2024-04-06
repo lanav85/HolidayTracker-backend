@@ -13,6 +13,14 @@ public class Role {
         this.approves = approves;
     }
 
+    public int getRoleID() {
+        return roleID;
+    }
+
+    public void setRoleID(int roleID) {
+        this.roleID = roleID;
+    }
+
     public char getLevel() {
         return level;
     }
