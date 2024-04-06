@@ -87,30 +87,31 @@ public class CreateHolidayRequestValidator {
         return weekdays;
     }
 
-    public HolidaysRequest getHolidayRequestDates(int id) throws SQLException {
-        Connection con = Database.getConnection(); // Establishes a database connection.
-        HolidaysRequest holidaysRequest = null;
+    public List <HolidaysRequest> getHolidayRequestDates(int userID) throws SQLException {
+        Connection con = Database.getConnection();
 
-        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE RequestID = ?";
+        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ? AND (status = 'Pending' OR status = 'Accepted')";
+        List<HolidaysRequest> holidayRequests = new ArrayList<>();
+
         PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, id);
+        ps.setInt(1, userID);
         ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             int requestID = rs.getInt("RequestID");
-            int userID = rs.getInt("UserID");
             Date requestFrom = rs.getDate("RequestFrom");
             Date requestTo = rs.getDate("RequestTo");
             String status = rs.getString("Status");
 
-            holidaysRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            holidayRequests.add(holidayRequest);
+
         }
-        // Closes the result set, prepared statement, and database connection to release resources.
         Database.closeResultSet(rs);
         Database.closePreparedStatement(ps);
         Database.closeConnection(con);
-        // Returns the retrieved User object, or null if no user was found.
-        return holidaysRequest;
+
+        return holidayRequests;
     }
 
     public boolean hasOverlappingRequests(Date newRequestFrom, Date newRequestTo, int userID) throws SQLException {

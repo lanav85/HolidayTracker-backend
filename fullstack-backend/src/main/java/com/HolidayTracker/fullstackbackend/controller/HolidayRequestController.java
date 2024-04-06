@@ -19,12 +19,10 @@ public class HolidayRequestController {
     @Autowired
     private HolidayRequestDAO holidayRequestDAO;
     private  CreateHolidayRequestValidator holidayRequestValidator;
-
     public HolidayRequestController(CreateHolidayRequestValidator holidayRequestValidator, HolidayRequestDAO holidayRequestDAO) {
         this.holidayRequestValidator = holidayRequestValidator;
         this.holidayRequestDAO = holidayRequestDAO;
     }
-
 
     @GetMapping("/RetrieveAllholidayRequestS")
     public ResponseEntity<Object> getAll() {
@@ -130,5 +128,19 @@ public class HolidayRequestController {
         }
 
 
+    }
+
+    @PutMapping("/UpdateHolidayRequestStatus/{requestID}")
+    public ResponseEntity<Object> UpdateHolidayRequest(@PathVariable int requestID, @RequestBody HolidaysRequest holidaysRequest) {
+        try {
+            int result = holidayRequestDAO.UpdateHolidayRequestStatus(holidaysRequest);
+            if (result > 0) {
+                return new ResponseEntity<>("Holiday Request successfully Updated", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Unable to update Holiday Request ", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

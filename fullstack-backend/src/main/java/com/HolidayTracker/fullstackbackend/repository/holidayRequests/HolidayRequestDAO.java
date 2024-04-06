@@ -151,7 +151,6 @@ public class HolidayRequestDAO {
         return holidayRequests;
 
     }
-
     // Delete holiday request
     public int deleteHolidayRequests(int id) throws SQLException {
 
@@ -168,7 +167,6 @@ public class HolidayRequestDAO {
 
         return result;
     }
-
     //Update Holiday Request Status
     public int UpdateHolidayRequestStatus(HolidaysRequest holidaysRequest) throws SQLException {
         Connection connection = Database.getConnection();
@@ -188,9 +186,6 @@ public class HolidayRequestDAO {
 
         return result;
     }
-
-    // Create new holiday request
-    // Inside HolidayRequestDAO class
     // Create new holiday request
     public int createHolidayRequest(HolidaysRequest request) throws SQLException {
         Connection con = Database.getConnection();
