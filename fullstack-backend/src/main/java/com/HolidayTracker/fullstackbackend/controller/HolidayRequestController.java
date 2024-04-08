@@ -4,6 +4,7 @@ import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.holidayRequests.HolidayRequestDAO;
 import com.HolidayTracker.fullstackbackend.service.CreateHolidayRequestValidator;
+import com.HolidayTracker.fullstackbackend.service.UpdateHolidayRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,13 @@ import java.util.List;
 public class HolidayRequestController {
     @Autowired
     private HolidayRequestDAO holidayRequestDAO;
-    private  CreateHolidayRequestValidator holidayRequestValidator;
-    public HolidayRequestController(CreateHolidayRequestValidator holidayRequestValidator, HolidayRequestDAO holidayRequestDAO) {
+    private CreateHolidayRequestValidator holidayRequestValidator;
+    private UpdateHolidayRequestValidator updateHolidayRequestValidator;
+
+    public HolidayRequestController(CreateHolidayRequestValidator holidayRequestValidator, HolidayRequestDAO holidayRequestDAO, UpdateHolidayRequestValidator updateHolidayRequestValidator) {
         this.holidayRequestValidator = holidayRequestValidator;
         this.holidayRequestDAO = holidayRequestDAO;
+        this.updateHolidayRequestValidator = updateHolidayRequestValidator;
     }
 
     @GetMapping("/RetrieveAllholidayRequestS")
@@ -37,7 +41,7 @@ public class HolidayRequestController {
     @GetMapping("/RetrieveHolidayRequestbyID/{id}")
     public ResponseEntity<Object> getHolidayRequestByID(@PathVariable int id) {
         try {
-            List <HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestByID(id);
+            List<HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestByID(id);
             if (holidayRequest != null) {
                 return ResponseEntity.ok().body(holidayRequest);
             } else {
@@ -51,7 +55,7 @@ public class HolidayRequestController {
     @GetMapping("/RetrieveHolidayRequestByUserID/{userID}")
     public ResponseEntity<Object> getHolidayRequestsByUserID(@PathVariable int userID) {
         try {
-            List <HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestsByUserID(userID);
+            List<HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestsByUserID(userID);
             if (holidayRequest != null) {
                 return ResponseEntity.ok().body(holidayRequest);
             } else {
@@ -65,7 +69,7 @@ public class HolidayRequestController {
     @GetMapping("/RetrieveHolidayRequestByStatus/{status}")
     public ResponseEntity<Object> getHolidayRequestsByStatus(@PathVariable String status) {
         try {
-           List <HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestsByStatus(status);
+            List<HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestsByStatus(status);
             if (holidayRequest != null) {
                 return ResponseEntity.ok().body(holidayRequest);
             } else {
@@ -133,14 +137,23 @@ public class HolidayRequestController {
     @PutMapping("/UpdateHolidayRequestStatus/{requestID}")
     public ResponseEntity<Object> UpdateHolidayRequest(@PathVariable int requestID, @RequestBody HolidaysRequest holidaysRequest) {
         try {
-            int result = holidayRequestDAO.UpdateHolidayRequestStatus(holidaysRequest);
-            if (result > 0) {
-                return new ResponseEntity<>("Holiday Request successfully Updated", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Unable to update Holiday Request ", HttpStatus.BAD_REQUEST);
+            ResponseEntity<Object> validationResponse = updateHolidayRequestValidator.validateHolidayRequest(holidaysRequest);
+            if (validationResponse.getStatusCode() != HttpStatus.OK) {
+                // Return validation error response
+                return validationResponse;
+            }
+            try {
+                int result = holidayRequestDAO.UpdateHolidayRequestStatus(holidaysRequest);
+                if (result > 0) {
+                    return new ResponseEntity<>("Holiday Request successfully Updated", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Unable to update Holiday Request ", HttpStatus.BAD_REQUEST);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new RuntimeException(e);
         }
     }
 }

@@ -18,11 +18,13 @@ import java.util.*;
 public class CreateHolidayRequestValidator {
     private final HolidayRequestDAO holidayRequestDAO;
     private final UserDao userDao;
+    private final ValidationLogic validationLogic;
 
 
-    public CreateHolidayRequestValidator(HolidayRequestDAO holidayRequestDAO, UserDao userDao) {
+    public CreateHolidayRequestValidator(HolidayRequestDAO holidayRequestDAO, UserDao userDao, ValidationLogic validationLogic) {
         this.holidayRequestDAO = holidayRequestDAO;
         this.userDao = userDao;
+        this.validationLogic = validationLogic;
     }
 
     public ResponseEntity<Object> validateHolidayRequest(HolidaysRequest holidaysRequest) {
@@ -46,9 +48,8 @@ public class CreateHolidayRequestValidator {
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found.");
             }
-
             // Check if Holiday Balance is enough
-            long totalWorkingDays = countWeekdays(requestFrom, requestTo);
+            long totalWorkingDays = validationLogic.countWeekdays(requestFrom, requestTo);
             int holidayEntitlement = user.getHolidayEntitlement();
             if (holidayEntitlement < totalWorkingDays) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient holiday balance.");
@@ -66,25 +67,6 @@ public class CreateHolidayRequestValidator {
             // Handle any exceptions
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error validating holiday request: " + e.getMessage());
         }
-    }
-
-    public long countWeekdays(Date requestFrom, Date requestTo) {
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTime(requestFrom);
-
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTime(requestTo);
-
-        long weekdays = 0;
-        // Iterate through each day between the start and end dates
-        while (!startCalendar.after(endCalendar)) {
-            int dayOfWeek = startCalendar.get(Calendar.DAY_OF_WEEK);
-            if (dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY) {
-                weekdays++;
-            }
-            startCalendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        return weekdays;
     }
 
     public List <HolidaysRequest> getHolidayRequestDates(int userID) throws SQLException {
