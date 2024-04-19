@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -20,10 +20,16 @@ public class UserController {
         return userDaoImpl.get(userId);
     }
 
+    @GetMapping("/login/{email}")
+    public User getUserByEmail(@PathVariable("email") String email) throws SQLException {
+        return userDaoImpl.getUserByEmail(email);
+    }
+
     @GetMapping("/RetrieveAllUsers")
     public List<User> getAll() throws SQLException {
         return userDaoImpl.getAll();
     }
+
     @PostMapping("/CreateNewUser")
     public ResponseEntity<Object> createUser(@RequestBody User newUser) {
         try {
@@ -61,21 +67,24 @@ public class UserController {
         }
     }
 }
-        /*if (user.getUserType().equals("HRManager")) {
-            System.out.println("The HRManager cannot be deleted from the system");
-            return 0;
-        }
-        if (user.getUserType().equals("Manager")) {
-            List<User> users = userDaoImpl.getAllUsersByDepartmentID(id);
-
-            if (!users.isEmpty()) {
-                System.out.println("User with ID " + id + " cannot be deleted as there are users assigned to them");
-                for (User checkuser : users) {
-                    System.out.println(checkuser.getEmail());
-                }
-                return 0;
-
-            }
-        }
-        return userDaoImpl.delete(userId);
-    }*/
+/*
+ * if (user.getUserType().equals("HRManager")) {
+ * System.out.println("The HRManager cannot be deleted from the system");
+ * return 0;
+ * }
+ * if (user.getUserType().equals("Manager")) {
+ * List<User> users = userDaoImpl.getAllUsersByDepartmentID(id);
+ * 
+ * if (!users.isEmpty()) {
+ * System.out.println("User with ID " + id +
+ * " cannot be deleted as there are users assigned to them");
+ * for (User checkuser : users) {
+ * System.out.println(checkuser.getEmail());
+ * }
+ * return 0;
+ * 
+ * }
+ * }
+ * return userDaoImpl.delete(userId);
+ * }
+ */
