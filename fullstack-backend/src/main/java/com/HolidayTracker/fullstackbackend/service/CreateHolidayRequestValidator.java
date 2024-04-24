@@ -16,6 +16,7 @@ import java.util.*;
 
 @Component
 public class CreateHolidayRequestValidator {
+
     private final HolidayRequestDAO holidayRequestDAO;
     private final UserDao userDao;
     private final ValidationLogic validationLogic;

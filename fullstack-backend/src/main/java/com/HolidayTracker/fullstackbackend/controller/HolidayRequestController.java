@@ -114,12 +114,11 @@ public class HolidayRequestController {
             // Validate the holiday request
             ResponseEntity<Object> validationResponse = holidayRequestValidator.validateHolidayRequest(holidaysRequest);
             if (validationResponse.getStatusCode() != HttpStatus.OK) {
-                // Return validation error response
                 return validationResponse;
             }
             try {
                 int result = holidayRequestDAO.createHolidayRequest(holidaysRequest);
-                if (result > 0) {
+                if (result > 0) { //"result > 0" checks if database operation is successful
                     return new ResponseEntity<>("Holiday Request successfully created", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Unable to create Holiday Request ", HttpStatus.BAD_REQUEST);
@@ -136,6 +135,7 @@ public class HolidayRequestController {
 
     @PutMapping("/UpdateHolidayRequestStatus/{requestID}")
     public ResponseEntity<Object> UpdateHolidayRequest(@PathVariable int requestID, @RequestBody HolidaysRequest holidaysRequest) {
+
         try {
             ResponseEntity<Object> validationResponse = updateHolidayRequestValidator.validateHolidayRequest(holidaysRequest);
             if (validationResponse.getStatusCode() != HttpStatus.OK) {

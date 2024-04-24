@@ -11,22 +11,22 @@ import java.util.List;
 @Component
 public class DepartmentDao {
 
-    public Department get(int id) throws SQLException {
+    public Department get(int departmentID) throws SQLException {
         Connection con = Database.getConnection();
         Department department = null;
 
-        String sql = "SELECT DepartmentID, DptName, UserID FROM Departments WHERE DepartmentID = ?";
+        String sql = "SELECT DepartmentID, DepartmentName, UserID FROM Department WHERE DepartmentID = ?";
 
         PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, id);
+        ps.setInt(1, departmentID);
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-            int departmentID = rs.getInt("DepartmentID");
-            String departmentName = rs.getString("DptName");
+            int departmentIDResult = rs.getInt("DepartmentID");
+            String departmentName = rs.getString("DepartmentName");
             int userID = rs.getInt("UserID");
 
-            department = new Department(departmentID, departmentName, userID);
+            department = new Department(departmentIDResult, departmentName, userID);
         }
 
         Database.closeResultSet(rs);
@@ -38,7 +38,7 @@ public class DepartmentDao {
 
     public List<Department> getAll() throws SQLException {
         Connection con = Database.getConnection();
-        String sql = "SELECT DepartmentID, DptName, UserID FROM Departments";
+        String sql = "SELECT DepartmentID, DepartmentName, UserID FROM Department";
 
         List<Department> departments = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class DepartmentDao {
 
         while (rs.next()) {
             int departmentID = rs.getInt("DepartmentID");
-            String departmentName = rs.getString("DptName");
+            String departmentName = rs.getString("DepartmentName");
             int userID = rs.getInt("UserID");
 
             Department department = new Department(departmentID, departmentName, userID);
@@ -64,7 +64,7 @@ public class DepartmentDao {
 
     public List<Department> getDepartmentsByDepartmentID(int departmentID) throws SQLException {
         Connection con = Database.getConnection();
-        String sql = "SELECT DepartmentID, DptName, UserID FROM Departments WHERE DepartmentID = ?";
+        String sql = "SELECT DepartmentID, DepartmentName, UserID FROM Department WHERE DepartmentID = ?";
 
         List<Department> departments = new ArrayList<>();
 
@@ -75,7 +75,7 @@ public class DepartmentDao {
 
         while (rs.next()) {
             int departmentIDResult = rs.getInt("DepartmentID");
-            String departmentName = rs.getString("DptName");
+            String departmentName = rs.getString("DepartmentName");
             int userID = rs.getInt("UserID");
 
             Department department = new Department(departmentIDResult, departmentName, userID);
@@ -92,7 +92,7 @@ public class DepartmentDao {
     public int insert(Department department) throws SQLException {
         Connection con = Database.getConnection();
 
-        String sql = "INSERT INTO Departments (DepartmentID, DptName, UserID) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Department (DepartmentID, DepartmentName, UserID) VALUES (?, ?, ?)";
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setInt(1, department.getDepartmentID());
         ps.setString(2, department.getDepartmentName());
@@ -109,7 +109,7 @@ public class DepartmentDao {
     public int update(Department department) throws SQLException {
         Connection connection = Database.getConnection();
 
-        String sql = "UPDATE Departments SET DptName = ?, UserID = ? WHERE DepartmentID = ?";
+        String sql = "UPDATE Department SET DepartmentName = ?, UserID = ? WHERE DepartmentID = ?";
         PreparedStatement ps = connection.prepareStatement(sql);
 
         ps.setString(1, department.getDepartmentName());
@@ -123,12 +123,12 @@ public class DepartmentDao {
         return result;
     }
 
-    public int delete(int id) throws SQLException {
+    public int delete(int departmentID) throws SQLException {
         Connection connection = Database.getConnection();
 
-        String sql = "DELETE FROM Departments WHERE DepartmentID = ?";
+        String sql = "DELETE FROM Department WHERE DepartmentID = ?";
         PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, id);
+        ps.setInt(1, departmentID);
 
         int result = ps.executeUpdate();
 
