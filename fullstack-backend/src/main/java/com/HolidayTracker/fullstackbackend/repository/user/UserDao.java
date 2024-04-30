@@ -2,6 +2,7 @@ package com.HolidayTracker.fullstackbackend.repository.user;
 
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
+import com.HolidayTracker.fullstackbackend.repository.department.DepartmentDao;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -98,7 +99,7 @@ public class UserDao {
             int DepartmentID = rs.getInt("DepartmentID");
             int RoleID = rs.getInt("RoleID");
 
-            User user = new User(UserID, Data, Email, DepartmentID, RoleID, HolidayEntitlement);
+            User user = new User(UserID, Data, Email, HolidayEntitlement, DepartmentID, RoleID);
 
             users.add(user);
         }
@@ -156,7 +157,11 @@ public class UserDao {
 
         // 5: Executes the SQL statement in this PreparedStatement object
         int result = ps.executeUpdate();
-
+        if (result > 0 && user.getRoleID() == 2) {
+            // Update Department UserID if the user has roleID 2
+            DepartmentDao departmentDAO = new DepartmentDao();
+            departmentDAO.updateDepartmentUserID(user.getDepartmentID(), user.getUserID());
+        }
         Database.closePreparedStatement(ps);
         Database.closeConnection(con);
 
@@ -179,6 +184,11 @@ public class UserDao {
         ps.setInt(5, user.getRoleID());
         ps.setInt(6, user.getUserID());
         int result = ps.executeUpdate();
+        if (result > 0 && user.getRoleID() == 2) {
+            // Update Department UserID if the user has roleID 2
+            DepartmentDao departmentDAO = new DepartmentDao();
+            departmentDAO.updateDepartmentUserID(user.getDepartmentID(), user.getUserID());
+        }
 
         Database.closePreparedStatement(ps);
         Database.closeConnection(connection);
@@ -201,4 +211,5 @@ public class UserDao {
 
         return result;
     }
+
 }

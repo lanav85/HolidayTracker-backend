@@ -137,4 +137,15 @@ public class DepartmentDao {
 
         return result;
     }
+    // Method to update Department UserID (to update manager accordly)
+    public void updateDepartmentUserID(int departmentID, int userID) throws SQLException {
+        Connection con = Database.getConnection();
+        String sql = "UPDATE Department SET UserID = ? WHERE DepartmentID = ?";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, userID);
+        ps.setInt(2, departmentID);
+        ps.executeUpdate();
+        Database.closePreparedStatement(ps);
+        Database.closeConnection(con);
+    }
 }
