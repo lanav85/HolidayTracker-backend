@@ -28,79 +28,40 @@ public class HolidayRequestController {
         this.updateHolidayRequestValidator = updateHolidayRequestValidator;
     }
 
-    @GetMapping("/RetrieveAllholidayRequestS")
-    public ResponseEntity<Object> getAll() {
-        try {
-            List<HolidaysRequest> holidayRequests = holidayRequestDAO.getAllHolidayRequests();
-            return ResponseEntity.ok().body(holidayRequests);
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving holiday requests: " + e.getMessage());
-        }
-    }
 
-    @GetMapping("/RetrieveHolidayRequestbyID/{id}")
-    public ResponseEntity<Object> getHolidayRequestByID(@PathVariable int id) {
+    @GetMapping("/holidayRequests")
+    public ResponseEntity<Object> getHolidayRequests(@RequestParam(required = false) Integer userId,
+                                                     @RequestParam(required = false) String status) {
         try {
-            List<HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestByID(id);
-            if (holidayRequest != null) {
-                return ResponseEntity.ok().body(holidayRequest);
+            List<HolidaysRequest> holidayRequests;
+            if (userId != null && status != null) {
+                holidayRequests = holidayRequestDAO.getHolidayRequestsByUserIDAndStatus(userId, status);
+            } else if (userId != null) {
+                holidayRequests = holidayRequestDAO.getHolidayRequestsByUserID(userId);
+            } else if (status != null) {
+                holidayRequests = holidayRequestDAO.getHolidayRequestsByStatus(status);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Holiday request with ID " + id + " not found");
+                holidayRequests = holidayRequestDAO.getAllHolidayRequests();
             }
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving holiday request: " + e.getMessage());
-        }
-    }
 
-    @GetMapping("/RetrieveHolidayRequestByUserID/{userID}")
-    public ResponseEntity<Object> getHolidayRequestsByUserID(@PathVariable int userID) {
-        try {
-            List<HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestsByUserID(userID);
-            if (holidayRequest != null) {
-                return ResponseEntity.ok().body(holidayRequest);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No holiday requests found for User ID " + userID);
-            }
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving holiday requests: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/RetrieveHolidayRequestByStatus/{status}")
-    public ResponseEntity<Object> getHolidayRequestsByStatus(@PathVariable String status) {
-        try {
-            List<HolidaysRequest> holidayRequest = holidayRequestDAO.getHolidayRequestsByStatus(status);
-            if (holidayRequest != null) {
-                return ResponseEntity.ok().body(holidayRequest);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No holiday requests found with status '" + status + "'");
-            }
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving holiday requests: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/RetrieveHolidayRequestsByDepartment/{departmentId}")
-    public ResponseEntity<Object> getHolidayRequestsByDepartmentId(@PathVariable int departmentId) {
-        try {
-            List<HolidaysRequest> holidayRequests = holidayRequestDAO.getHolidayRequestsByDepartmentID(departmentId);
             if (!holidayRequests.isEmpty()) {
                 return ResponseEntity.ok().body(holidayRequests);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No holiday requests found for Department ID " + departmentId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No holiday requests found matching the criteria.");
             }
         } catch (SQLException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving holiday requests: " + e.getMessage());
         }
     }
 
-    @DeleteMapping("/DeleteHolidayRequest/{requestID}")
+    @DeleteMapping("/HolidayRequest/{requestID}")
     public ResponseEntity<Object> deleteHolidayRequest(@PathVariable("requestID") int requestID) {
         try {
             int result = holidayRequestDAO.deleteHolidayRequests(requestID);
             if (result > 0) {
                 return new ResponseEntity<>("Holiday Request successfully deleted", HttpStatus.OK);
             } else {
+
                 return new ResponseEntity<>("Unable to delete Holiday Request ", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
@@ -108,7 +69,7 @@ public class HolidayRequestController {
         }
     }
 
-    @PostMapping("/CreateNewHolidayRequest")
+    @PostMapping("/HolidayRequest")
     public ResponseEntity<Object> CreateHolidayRequest(@RequestBody HolidaysRequest holidaysRequest) {
         try {
             // Validate the holiday request
@@ -133,7 +94,7 @@ public class HolidayRequestController {
 
     }
 
-    @PutMapping("/UpdateHolidayRequestStatus/{requestID}")
+    @PutMapping("/HolidayRequest/{requestID}")
     public ResponseEntity<Object> UpdateHolidayRequest(@PathVariable int requestID, @RequestBody HolidaysRequest holidaysRequest) {
 
         try {

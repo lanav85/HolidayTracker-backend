@@ -19,37 +19,33 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
 
-    @GetMapping("/RetrieveUserbyID/{userId}")
-    public ResponseEntity<Object> getUserById(@PathVariable("userId") int userId) {
+    @GetMapping("/users")
+    public ResponseEntity<Object> getUsers(@RequestParam(required = false) Integer userId, @RequestParam(required = false) String email) {
         try {
-            User user = userDaoImpl.get(userId);
-            return ResponseEntity.ok(user);
+            if (userId != null) {
+                User user = userDaoImpl.get(userId);
+                if (user != null) {
+                    return ResponseEntity.ok(user);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + userId + " not found");
+                }
+            } else if (email != null) {
+                User user = userDaoImpl.getUserByEmail(email);
+                if (user != null) {
+                    return ResponseEntity.ok(user);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with email " + email + " not found");
+                }
+            } else {
+                List<User> users = userDaoImpl.getAll();
+                return ResponseEntity.ok(users);
+            }
         } catch (SQLException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
         }
     }
 
-    @GetMapping("/login/{email}")
-    public ResponseEntity<Object> getUserByEmail(@PathVariable("email") String email) {
-        try {
-            User user = userDaoImpl.getUserByEmail(email);
-            return ResponseEntity.ok(user);
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/RetrieveAllUsers")
-    public ResponseEntity<Object> getAll() {
-        try {
-            List<User> users = userDaoImpl.getAll();
-            return ResponseEntity.ok(users);
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/CreateNewUser")
+    @PostMapping("/users")
     public ResponseEntity<Object> createUser(@RequestBody User newUser) {
         try {
             ResponseEntity<Object> validationResponse = userValidator.validateUserRole(newUser);
@@ -71,7 +67,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/UpdateUser/{userId}")
+    @PutMapping("/users/{userId}")
     public ResponseEntity<Object> updateUser(@PathVariable int userId, @RequestBody User user) {
         try {
             ResponseEntity<Object> validationResponse = userValidator.validateUserRole(user);
@@ -91,7 +87,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/DeleteUser/{userId}")
+    @DeleteMapping("/users/{userId}")
     public ResponseEntity<Object> deleteUserById(@PathVariable int userId) throws SQLException {
 
         User user = userDaoImpl.get(userId);

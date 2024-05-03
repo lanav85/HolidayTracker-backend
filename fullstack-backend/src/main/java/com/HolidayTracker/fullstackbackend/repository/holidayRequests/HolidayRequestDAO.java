@@ -151,6 +151,31 @@ public class HolidayRequestDAO {
         return holidayRequests;
 
     }
+    // Get holiday requests by userID and status
+    public List<HolidaysRequest> getHolidayRequestsByUserIDAndStatus(int userID, String status) throws SQLException {
+        Connection con = Database.getConnection();
+        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ? AND Status = ?";
+        List<HolidaysRequest> holidayRequests = new ArrayList<>();
+
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, userID);
+        ps.setString(2, status);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            int requestID = rs.getInt("RequestID");
+            Date requestFrom = rs.getDate("RequestFrom");
+            Date requestTo = rs.getDate("RequestTo");
+
+            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            holidayRequests.add(holidayRequest);
+        }
+
+        Database.closeResultSet(rs);
+        Database.closePreparedStatement(ps);
+        Database.closeConnection(con);
+        return holidayRequests;
+    }
     // Delete holiday request
     public int deleteHolidayRequests(int id) throws SQLException {
 
