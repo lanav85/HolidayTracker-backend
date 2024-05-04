@@ -119,7 +119,7 @@ public class HolidayRequestDAO {
         Database.closeConnection(con);
         return holidayRequests;
     }
-    //Get Holiday Request by department
+    //Get Holiday Request by departmentID
     public List<HolidaysRequest> getHolidayRequestsByDepartmentID(int departmentID) throws SQLException {
         Connection con = Database.getConnection();
         String sql = "SELECT Requests.RequestID, Requests.UserID, Requests.RequestFrom, Requests.RequestTo, Requests.Status " +
@@ -174,6 +174,37 @@ public class HolidayRequestDAO {
         Database.closeResultSet(rs);
         Database.closePreparedStatement(ps);
         Database.closeConnection(con);
+        return holidayRequests;
+    }
+    // Get holiday requests by department ID and status
+    public List<HolidaysRequest> getHolidayRequestsByDepartmentIDAndStatus(int departmentID, String status) throws SQLException {
+        Connection con = Database.getConnection();
+        String sql = "SELECT Requests.RequestID, Requests.UserID, Requests.RequestFrom, Requests.RequestTo, Requests.Status " +
+                "FROM Requests " +
+                "JOIN Users ON Requests.UserID = Users.UserID " +
+                "JOIN Department ON Users.DepartmentID = Department.DepartmentID " +
+                "WHERE Department.DepartmentID = ? AND Requests.Status = ?";
+        List<HolidaysRequest> holidayRequests = new ArrayList<>();
+
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, departmentID);
+        ps.setString(2, status);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            int requestID = rs.getInt("RequestID");
+            int userID = rs.getInt("UserID");
+            Date requestFrom = rs.getDate("RequestFrom");
+            Date requestTo = rs.getDate("RequestTo");
+
+            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            holidayRequests.add(holidayRequest);
+        }
+
+        Database.closeResultSet(rs);
+        Database.closePreparedStatement(ps);
+        Database.closeConnection(con);
+
         return holidayRequests;
     }
     // Delete holiday request

@@ -20,7 +20,9 @@ public class UserController {
     private UserValidator userValidator;
 
     @GetMapping("/users")
-    public ResponseEntity<Object> getUsers(@RequestParam(required = false) Integer userId, @RequestParam(required = false) String email) {
+    public ResponseEntity<Object> getUsers(
+            @RequestParam(required = false) Integer userId,
+            @RequestParam(required = false) String email) {
         try {
             if (userId != null) {
                 User user = userDaoImpl.get(userId);

@@ -30,27 +30,45 @@ public class HolidayRequestController {
 
 
     @GetMapping("/holidayRequests")
-    public ResponseEntity<Object> getHolidayRequests(@RequestParam(required = false) Integer userId,
-                                                     @RequestParam(required = false) String status) {
+    public ResponseEntity<Object> getHolidayRequests(
+            @RequestParam(required = false) Integer userId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Integer departmentId) {
         try {
-            List<HolidaysRequest> holidayRequests;
-            if (userId != null && status != null) {
-                holidayRequests = holidayRequestDAO.getHolidayRequestsByUserIDAndStatus(userId, status);
-            } else if (userId != null) {
-                holidayRequests = holidayRequestDAO.getHolidayRequestsByUserID(userId);
+            if (userId != null) {
+                List<HolidaysRequest> holidayRequests = holidayRequestDAO.getHolidayRequestsByUserID(userId);
+                if (holidayRequests != null) {
+                    return ResponseEntity.ok(holidayRequests);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + userId + " not found");
+                }
+            } else if (departmentId != null && status != null) {
+                List<HolidaysRequest> holidayRequests = holidayRequestDAO.getHolidayRequestsByDepartmentIDAndStatus(departmentId, status);
+                if (holidayRequests != null) {
+                    return ResponseEntity.ok(holidayRequests);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + userId + " not found");
+                }
             } else if (status != null) {
-                holidayRequests = holidayRequestDAO.getHolidayRequestsByStatus(status);
+                List<HolidaysRequest> holidayRequests = holidayRequestDAO.getHolidayRequestsByStatus(status);
+                if (holidayRequests != null) {
+                    return ResponseEntity.ok(holidayRequests);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Status: " + status + " not found");
+                }
+            } else if (departmentId != null) {
+                List<HolidaysRequest> holidayRequests = holidayRequestDAO.getHolidayRequestsByDepartmentID(departmentId);
+                if (holidayRequests != null) {
+                    return ResponseEntity.ok(holidayRequests);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Department ID : " + departmentId + " not found");
+                }
             } else {
-                holidayRequests = holidayRequestDAO.getAllHolidayRequests();
-            }
-
-            if (!holidayRequests.isEmpty()) {
-                return ResponseEntity.ok().body(holidayRequests);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No holiday requests found matching the criteria.");
+                List<HolidaysRequest> holidayRequests = holidayRequestDAO.getAllHolidayRequests();
+                return ResponseEntity.ok(holidayRequests);
             }
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving holiday requests: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
         }
     }
 
