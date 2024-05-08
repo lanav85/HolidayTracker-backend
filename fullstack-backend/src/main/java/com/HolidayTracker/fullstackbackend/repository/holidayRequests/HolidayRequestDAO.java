@@ -1,11 +1,9 @@
 package com.HolidayTracker.fullstackbackend.repository.holidayRequests;
-
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 import com.HolidayTracker.fullstackbackend.service.CreateHolidayRequestValidator;
 import org.springframework.stereotype.Repository;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +11,7 @@ import java.util.Date;
 
 @Repository
 public class HolidayRequestDAO {
+
     // Get all holiday requests
     public List<HolidaysRequest> getAllHolidayRequests() throws SQLException {
         Connection con = Database.getConnection();
