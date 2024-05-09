@@ -1,6 +1,7 @@
 package com.HolidayTracker.fullstackbackend.controller;
 
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
+import com.HolidayTracker.fullstackbackend.model.HolidaysRequestWithUserName;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.holidayRequests.HolidayRequestDAO;
 import com.HolidayTracker.fullstackbackend.service.CreateHolidayRequestValidator;
@@ -57,11 +58,11 @@ public class HolidayRequestController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Status: " + status + " not found");
                 }
             } else if (departmentId != null) {
-                List<HolidaysRequest> holidayRequests = holidayRequestDAO.getHolidayRequestsByDepartmentID(departmentId);
-                if (holidayRequests != null) {
+                List<HolidaysRequestWithUserName> holidayRequests = holidayRequestDAO.getHolidayRequestsByDepartmentID(departmentId);
+                if (!holidayRequests.isEmpty()) {
                     return ResponseEntity.ok(holidayRequests);
                 } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Department ID : " + departmentId + " not found");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No holiday requests found for department ID " + departmentId);
                 }
             } else {
                 List<HolidaysRequest> holidayRequests = holidayRequestDAO.getAllHolidayRequests();
@@ -71,6 +72,7 @@ public class HolidayRequestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
         }
     }
+
 
     @DeleteMapping("/HolidayRequest/{requestID}")
     public ResponseEntity<Object> deleteHolidayRequest(@PathVariable("requestID") int requestID) {

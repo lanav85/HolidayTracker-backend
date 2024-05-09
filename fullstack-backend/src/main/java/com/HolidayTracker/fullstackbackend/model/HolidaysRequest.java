@@ -16,9 +16,7 @@ public class HolidaysRequest {
     private Date requestTo;
     private String status;
 
-    public HolidaysRequest(Date requestFrom, Date requestTo){
 
-    }
     @JsonCreator
     public HolidaysRequest(int requestID, int userID, Date requestFrom, Date requestTo, String status) {
         this.requestID = requestID;

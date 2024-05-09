@@ -1,5 +1,6 @@
 package com.HolidayTracker.fullstackbackend.repository.holidayRequests;
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
+import com.HolidayTracker.fullstackbackend.model.HolidaysRequestWithUserName;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 import com.HolidayTracker.fullstackbackend.service.CreateHolidayRequestValidator;
@@ -119,14 +120,16 @@ public class HolidayRequestDAO {
         return holidayRequests;
     }
     //Get Holiday Request by departmentID
-    public List<HolidaysRequest> getHolidayRequestsByDepartmentID(int departmentID) throws SQLException {
+    // Get holiday requests by department ID with user names
+    public List<HolidaysRequestWithUserName> getHolidayRequestsByDepartmentID(int departmentID) throws SQLException {
         Connection con = Database.getConnection();
-        String sql = "SELECT Requests.RequestID, Requests.UserID, Requests.RequestFrom, Requests.RequestTo, Requests.Status " +
+        String sql = "SELECT Requests.RequestID, Requests.UserID, Users.Data->>'name' AS UserName, " +
+                "Requests.RequestFrom, Requests.RequestTo, Requests.Status " +
                 "FROM Requests " +
                 "JOIN Users ON Requests.UserID = Users.UserID " +
                 "JOIN Department ON Users.DepartmentID = Department.DepartmentID " +
                 "WHERE Department.DepartmentID = ?";
-        List<HolidaysRequest> holidayRequests = new ArrayList<>();
+        List<HolidaysRequestWithUserName> holidayRequests = new ArrayList<>();
 
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setInt(1, departmentID);
@@ -136,11 +139,12 @@ public class HolidayRequestDAO {
         while (rs.next()) {
             int requestID = rs.getInt("RequestID");
             int userID = rs.getInt("UserID");
+            String userName = rs.getString("UserName");
             Date requestFrom = rs.getDate("RequestFrom");
             Date requestTo = rs.getDate("RequestTo");
             String status = rs.getString("Status");
 
-            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
+            HolidaysRequestWithUserName holidayRequest = new HolidaysRequestWithUserName(requestID, userID, requestFrom, requestTo, status, userName);
             holidayRequests.add(holidayRequest);
         }
 
@@ -148,7 +152,6 @@ public class HolidayRequestDAO {
         Database.closePreparedStatement(ps);
         Database.closeConnection(con);
         return holidayRequests;
-
     }
     // Get holiday requests by userID and status
     public List<HolidaysRequest> getHolidayRequestsByUserIDAndStatus(int userID, String status) throws SQLException {
