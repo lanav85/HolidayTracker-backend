@@ -1,6 +1,7 @@
 package com.HolidayTracker.fullstackbackend.repository.department;
 
 import com.HolidayTracker.fullstackbackend.model.Department;
+import com.HolidayTracker.fullstackbackend.model.DepartmentWithUserName;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 import org.springframework.stereotype.Component;
 
@@ -62,11 +63,14 @@ public class DepartmentDao {
         return departments;
     }
 
-    public List<Department> getDepartmentsByDepartmentID(int departmentID) throws SQLException {
+    public List<DepartmentWithUserName> getDepartmentsByDepartmentID(int departmentID) throws SQLException {
         Connection con = Database.getConnection();
-        String sql = "SELECT DepartmentID, DepartmentName, UserID FROM Department WHERE DepartmentID = ?";
+        String sql = "SELECT Department.DepartmentID, Department.DepartmentName, Users.UserID, Users.Data->>'name' AS UserName " +
+                "FROM Department " +
+                "JOIN Users ON Department.UserID = Users.UserID " +
+                "WHERE Department.DepartmentID = ?";
 
-        List<Department> departments = new ArrayList<>();
+        List<DepartmentWithUserName> departments = new ArrayList<>();
 
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setInt(1, departmentID);
@@ -77,8 +81,9 @@ public class DepartmentDao {
             int departmentIDResult = rs.getInt("DepartmentID");
             String departmentName = rs.getString("DepartmentName");
             int userID = rs.getInt("UserID");
+            String userName = rs.getString("UserName");
 
-            Department department = new Department(departmentIDResult, departmentName, userID);
+            DepartmentWithUserName department = new DepartmentWithUserName(departmentIDResult, departmentName, userID, userName);
             departments.add(department);
         }
 
@@ -88,7 +93,6 @@ public class DepartmentDao {
 
         return departments;
     }
-
     public int insert(Department department) throws SQLException {
         Connection con = Database.getConnection();
 

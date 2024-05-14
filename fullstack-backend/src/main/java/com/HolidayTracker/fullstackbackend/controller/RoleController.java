@@ -17,7 +17,7 @@ public class RoleController {
     @Autowired
     private RoleDao roleDao;
 
-    @GetMapping
+    @GetMapping ("/Role")
     public ResponseEntity<Object> getRole(
             @RequestParam(required = false) Integer roleId) {
         try {
@@ -37,11 +37,6 @@ public class RoleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error retrieving roles: " + e.getMessage());
         }
-    }
-
-    @GetMapping("/RetrieveAllRoles")
-    public List<Role> getAllRoles() throws SQLException {
-        return roleDao.getAll();
     }
 
     @PostMapping("/CreateNewRole")

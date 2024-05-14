@@ -1,6 +1,8 @@
 package com.HolidayTracker.fullstackbackend.controller;
 
 import com.HolidayTracker.fullstackbackend.model.Department;
+import com.HolidayTracker.fullstackbackend.model.DepartmentWithUserName;
+import com.HolidayTracker.fullstackbackend.model.Role;
 import com.HolidayTracker.fullstackbackend.repository.department.DepartmentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,30 +18,26 @@ public class DepartmentController {
     @Autowired
     private DepartmentDao departmentDao;
 
-    @GetMapping("/RetrieveDepartmentbyID/{departmentId}")
-    public ResponseEntity<Object> getDepartmentById(@PathVariable("departmentId") int departmentId) {
+    @GetMapping("/Department")
+    public ResponseEntity<Object> getDepartment(@RequestParam(required = false) Integer departmentID) {
         try {
-            Department department = departmentDao.get(departmentId);
-            if (department != null) {
-                return new ResponseEntity<>(department, HttpStatus.OK);
+            if (departmentID != null) {
+                List<DepartmentWithUserName> department = departmentDao.getDepartmentsByDepartmentID(departmentID);
+                if (!department.isEmpty()) {
+                    return ResponseEntity.ok(department);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body("Department with ID " + departmentID + " not found");
+                }
             } else {
-                return new ResponseEntity<>("Department not found", HttpStatus.NOT_FOUND);
+                List<Department> allDepartments = departmentDao.getAll();
+                return ResponseEntity.ok(allDepartments);
             }
         } catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving department: " + e.getMessage());
         }
     }
-
-    @GetMapping("/RetrieveAllDepartments")
-    public ResponseEntity<Object> getAllDepartments() {
-        try {
-            List<Department> departments = departmentDao.getAll();
-            return new ResponseEntity<>(departments, HttpStatus.OK);
-        } catch (SQLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @PostMapping("/CreateNewDepartment")
     public ResponseEntity<Object> createDepartment(@RequestBody Department newDepartment) {
         try {
