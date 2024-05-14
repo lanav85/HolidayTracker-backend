@@ -50,7 +50,7 @@ public class RoleDao {
         return roles;
     }
 
-    public List<Role> getAllRolesByRoleID(int roleID) throws SQLException {
+    public  List <Role> getRoleByRoleID(int roleID) throws SQLException {
         Connection con = Database.getConnection();
         String sql = "SELECT RoleID, Level, RoleDescription, Approves FROM Role WHERE RoleID = ?";
         List<Role> roles = new ArrayList<>();

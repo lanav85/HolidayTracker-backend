@@ -1,5 +1,6 @@
 package com.HolidayTracker.fullstackbackend.controller;
 
+import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.Role;
 import com.HolidayTracker.fullstackbackend.repository.role.RoleDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,26 @@ public class RoleController {
     @Autowired
     private RoleDao roleDao;
 
-    @GetMapping("/RetrieveRolebyID/{roleId}")
-    public Role getRoleById(@PathVariable("roleId") int roleId) throws SQLException {
-        return roleDao.get(roleId);
+    @GetMapping
+    public ResponseEntity<Object> getRole(
+            @RequestParam(required = false) Integer roleId) {
+        try {
+            if (roleId != null) {
+                List<Role> roles = roleDao.getRoleByRoleID(roleId);
+                if (roles != null) {
+                    return ResponseEntity.ok(roles);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body("Role with ID " + roleId + " not found");
+                }
+            } else {
+                List<Role> allRoles = roleDao.getAll();
+                return ResponseEntity.ok(allRoles);
+            }
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving roles: " + e.getMessage());
+        }
     }
 
     @GetMapping("/RetrieveAllRoles")

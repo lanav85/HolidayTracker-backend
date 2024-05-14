@@ -31,8 +31,8 @@ public class UpdateHolidayRequestValidator {
             int requestId = holidaysRequest.getRequestID();
             HolidaysRequest existingRequest = getExistingHolidayRequest(requestId);
 
-            // If the request is found and its status is "Pending" and the new status is "Accepted"
-            if (existingRequest != null && existingRequest.getStatus().equalsIgnoreCase("Pending") && holidaysRequest.getStatus().equalsIgnoreCase("Accepted")) {
+            // If the request is found and its status is "Pending" and the new status is "Approved"
+            if (existingRequest != null && existingRequest.getStatus().equalsIgnoreCase("Pending") && holidaysRequest.getStatus().equalsIgnoreCase("Approved")) {
                 // Deduct holiday entitlement from the user
                 int userId = existingRequest.getUserID();
                 User user = userDao.get(userId);
@@ -49,7 +49,7 @@ public class UpdateHolidayRequestValidator {
                 return ResponseEntity.ok("Holiday request validated successfully. Holiday entitlement deducted.");
             }
             // If the existing request status is "Accepted" and the new status is "Pending"
-            else if (existingRequest != null && existingRequest.getStatus().equalsIgnoreCase("Accepted") && holidaysRequest.getStatus().equalsIgnoreCase("Rejected")) {
+            else if (existingRequest != null && existingRequest.getStatus().equalsIgnoreCase("Approved") && holidaysRequest.getStatus().equalsIgnoreCase("Rejected")) {
                 // Add back the deducted days to the user's holiday entitlement
                 int userId = existingRequest.getUserID();
                 User user = userDao.get(userId);
@@ -63,7 +63,7 @@ public class UpdateHolidayRequestValidator {
                 userDao.update(user);
 
                 // Return success response
-                return ResponseEntity.ok("Holiday request status reverted from Accepted to Pending. Deducted days added back to holiday entitlement.");
+                return ResponseEntity.ok("Holiday request status reverted from Approved to Pending. Deducted days added back to holiday entitlement.");
             }
 
             // Return response indicating no updates were made
