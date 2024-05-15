@@ -25,7 +25,7 @@ public class DepartmentWithUserName extends Department{
                 "departmentID=" + getDepartmentID() +
                 ", departmentName='" + getDepartmentName() + '\'' +
                 ", userID=" + getUserID() +
-                ", userName='" + userName + '\'' +
+                ", managerName='" + userName + '\'' +
                 '}';
     }
 

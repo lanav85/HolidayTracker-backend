@@ -39,7 +39,9 @@ public class DepartmentDao {
 
     public List<Department> getAll() throws SQLException {
         Connection con = Database.getConnection();
-        String sql = "SELECT DepartmentID, DepartmentName, UserID FROM Department";
+        String sql = "SELECT Department.DepartmentID, Department.DepartmentName, Users.UserID, Users.Data->>'name' AS UserName " +
+                "FROM Department " +
+                "JOIN Users ON Department.UserID = Users.UserID ";
 
         List<Department> departments = new ArrayList<>();
 
@@ -50,8 +52,9 @@ public class DepartmentDao {
             int departmentID = rs.getInt("DepartmentID");
             String departmentName = rs.getString("DepartmentName");
             int userID = rs.getInt("UserID");
+            String userName = rs.getString("UserName");
 
-            Department department = new Department(departmentID, departmentName, userID);
+            DepartmentWithUserName department = new DepartmentWithUserName(departmentID, departmentName, userID, userName);
 
             departments.add(department);
         }

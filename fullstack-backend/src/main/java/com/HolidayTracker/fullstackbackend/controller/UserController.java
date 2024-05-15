@@ -22,7 +22,8 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<Object> getUsers(
             @RequestParam(required = false) Integer userId,
-            @RequestParam(required = false) String email) {
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) Integer departmentId) {
         try {
             if (userId != null) {
                 User user = userDaoImpl.get(userId);
@@ -38,6 +39,13 @@ public class UserController {
                 } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with email " + email + " not found");
                 }
+            } else if (departmentId != null) {
+                List<User> users = userDaoImpl.getAllUsersByDepartmentID(departmentId);
+                if (users != null) {
+                    return ResponseEntity.ok(users);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Users with departmentId " + departmentId + " not found");
+                }
             } else {
                 List<User> users = userDaoImpl.getAll();
                 return ResponseEntity.ok(users);
@@ -46,6 +54,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
         }
     }
+
 
     @PostMapping("/users")
     public ResponseEntity<Object> createUser(@RequestBody User newUser) {
