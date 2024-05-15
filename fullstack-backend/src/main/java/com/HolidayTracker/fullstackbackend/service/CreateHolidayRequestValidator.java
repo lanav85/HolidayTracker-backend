@@ -73,7 +73,7 @@ public class CreateHolidayRequestValidator {
     public List <HolidaysRequest> getHolidayRequestDates(int userID) throws SQLException {
         Connection con = Database.getConnection();
 
-        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ? AND (status = 'Pending' OR status = 'Accepted')";
+        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ? AND (status = 'Pending' OR status = 'Approved')";
         List<HolidaysRequest> holidayRequests = new ArrayList<>();
 
         PreparedStatement ps = con.prepareStatement(sql);
