@@ -1,10 +1,12 @@
 package com.HolidayTracker.fullstackbackend.repository.holidayRequests;
+
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequestWithUserName;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 import com.HolidayTracker.fullstackbackend.service.CreateHolidayRequestValidator;
 import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,139 +14,64 @@ import java.util.Date;
 
 @Repository
 public class HolidayRequestDAO {
-
-    // Get all holiday requests
-    public List<HolidaysRequest> getAllHolidayRequests() throws SQLException {
+    public List<HolidaysRequest> getHolidayRequests(Integer requestId,
+                                                    Integer userId,
+                                                    Integer departmentId,
+                                                    String status) throws SQLException {
         Connection con = Database.getConnection();
-        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests";
-
-        List<HolidaysRequest> holidayRequests = new ArrayList<>();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-
-        while (rs.next()) {
-            int requestID = rs.getInt("RequestID");
-            int userID = rs.getInt("UserID");
-            Date requestFrom = rs.getDate("RequestFrom");
-            Date requestTo = rs.getDate("RequestTo");
-            String status = rs.getString("Status");
-
-            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
-            holidayRequests.add(holidayRequest);
+        String select_sql =
+                "SELECT r.RequestID, r.UserID, r.RequestFrom, r.RequestTo, r.Status " +
+                        "FROM Requests r " +
+                        "JOIN Users u ON r.UserID = u.UserID " +
+                        "JOIN Department d ON u.DepartmentID = d.DepartmentID";
+        StringBuilder where_sql = new StringBuilder();
+        if (requestId != null) {
+            where_sql.append(where_sql.isEmpty() ? " WHERE" : " AND");
+            where_sql.append(" r.RequestId = ?");
         }
-        Database.closeResultSet(rs);
-        Database.closeStatement(stmt);
-        Database.closeConnection(con);
-        return holidayRequests;
-
-    }
-    // Get holiday request by ID
-    public List <HolidaysRequest> getHolidayRequestByID(int id) throws SQLException {
-        Connection con = Database.getConnection(); // Establishes a database connection.
-        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE RequestID = ?";
-
-        List<HolidaysRequest> holidayRequests = new ArrayList<>();
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            int requestID = rs.getInt("RequestID");
-            int userID = rs.getInt("UserID");
-            Date requestFrom = rs.getDate("RequestFrom");
-            Date requestTo = rs.getDate("RequestTo");
-            String status = rs.getString("Status");
-
-            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
-            holidayRequests.add(holidayRequest);
-
+        if (userId != null) {
+            where_sql.append(where_sql.isEmpty() ? " WHERE" : " AND");
+            where_sql.append(" r.UserID = ?");
         }
-        // Closes the result set, prepared statement, and database connection to release resources.
-        Database.closeResultSet(rs);
-        Database.closePreparedStatement(ps);
-        Database.closeConnection(con);
-        // Returns the retrieved User object, or null if no user was found.
-        return holidayRequests;
-    }
-    // Get holiday requests by userID
-    public List <HolidaysRequest> getHolidayRequestsByUserID(int userID) throws SQLException {
-        Connection con = Database.getConnection();
+        if (departmentId != null) {
+            where_sql.append(where_sql.isEmpty() ? " WHERE" : " AND");
+            where_sql.append(" d.DepartmentID = ?");
+        }
+        if (status != null) {
+            where_sql.append(where_sql.isEmpty() ? " WHERE" : " AND");
+            where_sql.append(" r.Status = ?");
+        }
+        String sql = select_sql + where_sql;
 
-        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ?";
         List<HolidaysRequest> holidayRequests = new ArrayList<>();
 
         PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, userID);
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            int requestID = rs.getInt("RequestID");
-            Date requestFrom = rs.getDate("RequestFrom");
-            Date requestTo = rs.getDate("RequestTo");
-            String status = rs.getString("Status");
-
-            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
-            holidayRequests.add(holidayRequest);
-
+        int pi = 0;
+        if (requestId != null) {
+            pi++;
+            ps.setInt(pi, requestId);
         }
-        Database.closeResultSet(rs);
-        Database.closePreparedStatement(ps);
-        Database.closeConnection(con);
-
-        return holidayRequests;
-    }
-    // Get holiday requests by status
-    public List<HolidaysRequest> getHolidayRequestsByStatus(String status) throws SQLException {
-        Connection con = Database.getConnection();
-
-        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE Status = ?";
-        List<HolidaysRequest> holidayRequests = new ArrayList<>();
-
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setString(1, status);
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            int requestID = rs.getInt("RequestID");
-            int userID = rs.getInt("UserID");
-            Date requestFrom = rs.getDate("RequestFrom");
-            Date requestTo = rs.getDate("RequestTo");
-
-            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
-            holidayRequests.add(holidayRequest);
-
+        if (userId != null) {
+            pi++;
+            ps.setInt(pi, userId);
         }
-        Database.closeResultSet(rs);
-        Database.closePreparedStatement(ps);
-        Database.closeConnection(con);
-        return holidayRequests;
-    }
-    //Get Holiday Request by departmentID
-    // Get holiday requests by department ID with user names
-    public List<HolidaysRequestWithUserName> getHolidayRequestsByDepartmentID(int departmentID) throws SQLException {
-        Connection con = Database.getConnection();
-        String sql = "SELECT Requests.RequestID, Requests.UserID, Users.Data->>'name' AS UserName, " +
-                "Requests.RequestFrom, Requests.RequestTo, Requests.Status " +
-                "FROM Requests " +
-                "JOIN Users ON Requests.UserID = Users.UserID " +
-                "JOIN Department ON Users.DepartmentID = Department.DepartmentID " +
-                "WHERE Department.DepartmentID = ?";
-        List<HolidaysRequestWithUserName> holidayRequests = new ArrayList<>();
-
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, departmentID);
-
+        if (departmentId != null) {
+            pi++;
+            ps.setInt(pi, departmentId);
+        }
+        if (status != null) {
+            pi++;
+            ps.setString(pi, status);
+        }
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            int requestID = rs.getInt("RequestID");
-            int userID = rs.getInt("UserID");
-            String userName = rs.getString("UserName");
-            Date requestFrom = rs.getDate("RequestFrom");
-            Date requestTo = rs.getDate("RequestTo");
-            String status = rs.getString("Status");
-
-            HolidaysRequestWithUserName holidayRequest = new HolidaysRequestWithUserName(requestID, userID, requestFrom, requestTo, status, userName);
+            int resRequestID = rs.getInt("RequestID");
+            int resUserID = rs.getInt("UserID");
+            Date resRequestFrom = rs.getDate("RequestFrom");
+            Date resRequestTo = rs.getDate("RequestTo");
+            String resStatus = rs.getString("Status");
+            HolidaysRequest holidayRequest = new HolidaysRequest(resRequestID, resUserID, resRequestFrom, resRequestTo, resStatus);
             holidayRequests.add(holidayRequest);
         }
 
@@ -153,62 +80,7 @@ public class HolidayRequestDAO {
         Database.closeConnection(con);
         return holidayRequests;
     }
-    // Get holiday requests by userID and status
-    public List<HolidaysRequest> getHolidayRequestsByUserIDAndStatus(int userID, String status) throws SQLException {
-        Connection con = Database.getConnection();
-        String sql = "SELECT RequestID, UserID, RequestFrom, RequestTo, Status FROM Requests WHERE UserID = ? AND Status = ?";
-        List<HolidaysRequest> holidayRequests = new ArrayList<>();
 
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, userID);
-        ps.setString(2, status);
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            int requestID = rs.getInt("RequestID");
-            Date requestFrom = rs.getDate("RequestFrom");
-            Date requestTo = rs.getDate("RequestTo");
-
-            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
-            holidayRequests.add(holidayRequest);
-        }
-
-        Database.closeResultSet(rs);
-        Database.closePreparedStatement(ps);
-        Database.closeConnection(con);
-        return holidayRequests;
-    }
-    // Get holiday requests by department ID and status
-    public List<HolidaysRequest> getHolidayRequestsByDepartmentIDAndStatus(int departmentID, String status) throws SQLException {
-        Connection con = Database.getConnection();
-        String sql = "SELECT Requests.RequestID, Requests.UserID, Requests.RequestFrom, Requests.RequestTo, Requests.Status " +
-                "FROM Requests " +
-                "JOIN Users ON Requests.UserID = Users.UserID " +
-                "JOIN Department ON Users.DepartmentID = Department.DepartmentID " +
-                "WHERE Department.DepartmentID = ? AND Requests.Status = ?";
-        List<HolidaysRequest> holidayRequests = new ArrayList<>();
-
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, departmentID);
-        ps.setString(2, status);
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            int requestID = rs.getInt("RequestID");
-            int userID = rs.getInt("UserID");
-            Date requestFrom = rs.getDate("RequestFrom");
-            Date requestTo = rs.getDate("RequestTo");
-
-            HolidaysRequest holidayRequest = new HolidaysRequest(requestID, userID, requestFrom, requestTo, status);
-            holidayRequests.add(holidayRequest);
-        }
-
-        Database.closeResultSet(rs);
-        Database.closePreparedStatement(ps);
-        Database.closeConnection(con);
-
-        return holidayRequests;
-    }
     // Delete holiday request
     public int deleteHolidayRequests(int id) throws SQLException {
 
@@ -225,6 +97,7 @@ public class HolidayRequestDAO {
 
         return result;
     }
+
     //Update Holiday Request Status
     public int UpdateHolidayRequestStatus(HolidaysRequest holidaysRequest) throws SQLException {
         Connection connection = Database.getConnection();
@@ -244,6 +117,7 @@ public class HolidayRequestDAO {
 
         return result;
     }
+
     // Create new holiday request
     public int createHolidayRequest(HolidaysRequest request) throws SQLException {
         Connection con = Database.getConnection();
