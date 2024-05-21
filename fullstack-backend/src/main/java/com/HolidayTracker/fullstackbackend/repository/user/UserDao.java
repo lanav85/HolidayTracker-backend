@@ -25,10 +25,10 @@ public class UserDao {
         // users WHERE UserID = ?). The value of the parameter (userId) is set using
         // setInt() method before executing the query.
         PreparedStatement ps = con.prepareStatement(sql); // the sql is passed as an argument to the prepareStatement()
-                                                          // method to create the PreparedStatement object ps.
+        // method to create the PreparedStatement object ps.
         ps.setInt(1, id); // Sets the user ID parameter in the SQL query.
         ResultSet rs = ps.executeQuery(); // ResultSet object holds the data from a database after executing a query. So
-                                          // this line will Execute the SQL query and retrieves the result set.
+        // this line will Execute the SQL query and retrieves the result set.
 
         // Checks if the result set has at least one row in the result set. If rs.next()
         // returns true, indicating there is a row, the code inside the if block

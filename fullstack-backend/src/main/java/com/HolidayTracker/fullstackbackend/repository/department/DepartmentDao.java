@@ -39,10 +39,11 @@ public class DepartmentDao {
 
     public List<Department> getAll() throws SQLException {
         Connection con = Database.getConnection();
-        String sql = "SELECT Department.DepartmentID, Department.DepartmentName, Users.UserID, Users.Data->>'name' AS UserName " +
+        String sql = "SELECT Department.DepartmentID, Department.DepartmentName, Department.UserID, " +
+                "Users.Data->>'name' AS UserName " +
                 "FROM Department " +
-                "JOIN Users ON Department.UserID = Users.UserID ";
-
+                "LEFT JOIN Users ON Department.UserID = Users.UserID";
+        //Left join  will ensure that all departments are included in the result,even if userid is null.
         List<Department> departments = new ArrayList<>();
 
         Statement stmt = con.createStatement();
@@ -70,7 +71,7 @@ public class DepartmentDao {
         Connection con = Database.getConnection();
         String sql = "SELECT Department.DepartmentID, Department.DepartmentName, Users.UserID, Users.Data->>'name' AS UserName " +
                 "FROM Department " +
-                "JOIN Users ON Department.UserID = Users.UserID " +
+                " LEFT JOIN Users ON Department.UserID = Users.UserID " +
                 "WHERE Department.DepartmentID = ?";
 
         List<DepartmentWithUserName> departments = new ArrayList<>();
