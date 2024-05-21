@@ -1,6 +1,7 @@
 package com.HolidayTracker.fullstackbackend.controller;
 
 import com.HolidayTracker.fullstackbackend.model.User;
+import com.HolidayTracker.fullstackbackend.model.UserWithRoleName;
 import com.HolidayTracker.fullstackbackend.repository.user.UserDao;
 import com.HolidayTracker.fullstackbackend.service.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class UserController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with email " + email + " not found");
                 }
             } else if (departmentId != null) {
-                List<User> users = userDaoImpl.getAllUsersByDepartmentID(departmentId);
+                List<UserWithRoleName> users = userDaoImpl.getAllUsersByDepartmentID(departmentId);
                 if (users != null) {
                     return ResponseEntity.ok(users);
                 } else {
@@ -58,44 +59,13 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<Object> createUser(@RequestBody User newUser) {
-        try {
-            ResponseEntity<Object> validationResponse = userValidator.validateUserRole(newUser);
-            if (validationResponse.getStatusCode() != HttpStatus.OK) {
-                return validationResponse;
-            }
-            try {
-                int result = userDaoImpl.insert(newUser);
-                if (result > 0) {
-                    return new ResponseEntity<>("User successfully created", HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>("Unable to create user", HttpStatus.BAD_REQUEST);
-                }
-            } catch (Exception e) {
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return userValidator.createUserOrUpdateUser(newUser);
     }
 
     @PutMapping("/users/{userId}")
     public ResponseEntity<Object> updateUser(@PathVariable int userId, @RequestBody User user) {
-        try {
-            ResponseEntity<Object> validationResponse = userValidator.validateUserRole(user);
-            if (validationResponse.getStatusCode() != HttpStatus.OK) {
-                return validationResponse;
-            }
-
-            user.setUserID(userId);
-            int result = userDaoImpl.update(user);
-            if (result > 0) {
-                return ResponseEntity.ok("User successfully updated");
-            } else {
-                return ResponseEntity.badRequest().body("Unable to update user");
-            }
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
-        }
+        user.setUserID(userId);
+        return userValidator.createUserOrUpdateUser(user);
     }
 
     @DeleteMapping("/users/{userId}")

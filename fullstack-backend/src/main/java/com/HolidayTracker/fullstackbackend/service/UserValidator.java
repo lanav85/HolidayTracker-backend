@@ -1,6 +1,7 @@
 package com.HolidayTracker.fullstackbackend.service;
 
 import com.HolidayTracker.fullstackbackend.model.User;
+import com.HolidayTracker.fullstackbackend.model.UserWithRoleName;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 import com.HolidayTracker.fullstackbackend.repository.user.UserDao;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,25 +27,24 @@ public class UserValidator {
         this.userDao = userDao;
     }
 
-    //method that allows only one manager by department
+    // Method that allows only one manager by department
     public ResponseEntity<Object> validateUserRole(User newUser) {
         try {
             int departmentID = newUser.getDepartmentID();
             int roleID = newUser.getRoleID();
             String departmentName = getDepartmentNameById(departmentID);
-            String userName = extractUserName(newUser.getData());
 
             // Check if the user is assigned roleID 2
             if (roleID == 2) {
                 // Retrieve all users of the same department
-                List<User> usersInDepartment = userDao.getAllUsersByDepartmentID(departmentID);
+                List<UserWithRoleName> usersInDepartment = userDao.getAllUsersByDepartmentID(departmentID);
 
                 // Check if there's already a user with roleID 2 in the department
                 for (User user : usersInDepartment) {
-                    if (user.getRoleID() == 2 && user.getUserID() != newUser.getUserID()) { //checked as well if the userID isn't the same of anyone in the list in case of update requests.
-                        // If a user with roleID 2 already exists, print error message
-
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The user " + userName + " is already the manager of the department of " + departmentName + ". Please update role.");
+                    if (user.getRoleID() == 2 && user.getUserID() != newUser.getUserID()) {
+                        // Extract the username of the current manager
+                        String currentManagerName = extractUserName(user.getData());
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The user " + currentManagerName + " is already the manager of the department of " + departmentName + ". Please update role.");
                     }
                 }
             }
@@ -58,12 +58,9 @@ public class UserValidator {
     }
 
     private String extractUserName(String userData) {
-        // Initialize ObjectMapper to parse JSON
         ObjectMapper mapper = new ObjectMapper();
         try {
-            // Convert JSON string to JsonNode
             JsonNode node = mapper.readTree(userData);
-            // Extract and return the value of the "name" field
             return node.get("name").asText();
         } catch (IOException e) {
             System.err.println("IOException occurred while parsing user data: " + e.getMessage());
@@ -87,7 +84,6 @@ public class UserValidator {
         return departmentName;
     }
 
-    // Method to update UserID in Department table
     private void updateDepartmentUserID(int departmentID, int userID) throws SQLException {
         Connection con = Database.getConnection();
         String sql = "UPDATE Department SET UserID = ? WHERE DepartmentID = ?";
@@ -99,20 +95,21 @@ public class UserValidator {
         Database.closeConnection(con);
     }
 
-    // Method to create or update user and update Department UserID if necessary
     public ResponseEntity<Object> createUserOrUpdateUser(User user) {
         try {
+            ResponseEntity<Object> validationResponse = validateUserRole(user);
+            if (validationResponse.getStatusCode() != HttpStatus.OK) {
+                return validationResponse;
+            }
+
             int result;
             if (user.getUserID() != 0) {
-                // Update existing user
                 result = userDao.update(user);
             } else {
-                // Create new user
                 result = userDao.insert(user);
             }
 
             if (result > 0 && user.getRoleID() == 2) {
-                // Update Department UserID if the user has roleID 2
                 updateDepartmentUserID(user.getDepartmentID(), user.getUserID());
             }
 

@@ -1,6 +1,7 @@
 package com.HolidayTracker.fullstackbackend.service;
 
 import com.HolidayTracker.fullstackbackend.model.User;
+import com.HolidayTracker.fullstackbackend.model.UserWithRoleName;
 import com.HolidayTracker.fullstackbackend.repository.user.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class ManagerDeletion {
                 int departmentId = deletedManager.getDepartmentID();
 
                 // Retrieve all users within the deleted manager's department
-                List<User> usersInDepartment = userDao.getAllUsersByDepartmentID(departmentId);
+                List<UserWithRoleName> usersInDepartment = userDao.getAllUsersByDepartmentID(departmentId);
 
                 // Retrieve the ID of the Senior Manager (role ID 3)
                 int seniorManagerRoleId = 3;

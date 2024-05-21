@@ -1,6 +1,7 @@
 package com.HolidayTracker.fullstackbackend.repository.user;
 
 import com.HolidayTracker.fullstackbackend.model.User;
+import com.HolidayTracker.fullstackbackend.model.UserWithRoleName;
 import com.HolidayTracker.fullstackbackend.repository.Database;
 import com.HolidayTracker.fullstackbackend.repository.department.DepartmentDao;
 import org.springframework.stereotype.Component;
@@ -43,7 +44,7 @@ public class UserDao {
             int DepartmentID = rs.getInt("DepartmentID");
 
             // Creates a new User object with the retrieved data.
-            user = new User(UserID, Data, Email, HolidayEntitlement, RoleID, DepartmentID);
+            user = new User(UserID, Data, Email, HolidayEntitlement, DepartmentID, RoleID);
 
         }
         // Closes the result set, prepared statement, and database connection to release
@@ -109,36 +110,40 @@ public class UserDao {
         return users;
     }
 
-    // get list of users by department ID
-    public List<User> getAllUsersByDepartmentID(int departmentID) throws SQLException {
+    public List<UserWithRoleName> getAllUsersByDepartmentID(int departmentID) throws SQLException {
         Connection con = Database.getConnection();
-        String sql = "SELECT UserID,Data,Email,HolidayEntitlement,DepartmentID,RoleID FROM users WHERE DepartmentID = ?";
+        String sql = "SELECT u.UserID, u.Data, u.Email, u.HolidayEntitlement, u.DepartmentID, u.RoleID, r.RoleDescription " +
+                "FROM Users u " +
+                "JOIN Role r ON u.RoleID = r.RoleID " +
+                "WHERE u.DepartmentID = ?";
 
-        List<User> users = new ArrayList<>();
+        List<UserWithRoleName> users = new ArrayList<>();
 
-        // Use PreparedStatement instead of Statement
         PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, departmentID); // Set the DepartmentID parameter
+        ps.setInt(1, departmentID);
 
-        ResultSet rs = ps.executeQuery(); // Execute the query using PreparedStatement
+        ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            int UserID = rs.getInt("UserID");
-            String Data = rs.getString("Data");
-            String Email = rs.getString("Email");
-            int HolidayEntitlement = rs.getInt("HolidayEntitlement");
-            int DepartmentID = rs.getInt("DepartmentID");
-            int RoleID = rs.getInt("RoleID");
+            int userID = rs.getInt("UserID");
+            String data = rs.getString("Data");
+            String email = rs.getString("Email");
+            int holidayEntitlement = rs.getInt("HolidayEntitlement");
+            int roleID = rs.getInt("RoleID");
+            String roleDescription = rs.getString("RoleDescription");
 
-            User user = new User(UserID, Data, Email, HolidayEntitlement, DepartmentID, RoleID);
+            UserWithRoleName user = new UserWithRoleName(userID, data, email, holidayEntitlement, departmentID, roleID, roleDescription);
             users.add(user);
         }
+
         Database.closeResultSet(rs);
         Database.closePreparedStatement(ps);
         Database.closeConnection(con);
 
         return users;
     }
+
+
 
     // Create new user
     public int insert(User user) throws SQLException {
