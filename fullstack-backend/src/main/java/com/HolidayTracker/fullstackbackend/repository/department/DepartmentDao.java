@@ -100,19 +100,18 @@ public class DepartmentDao {
     public int insert(Department department) throws SQLException {
         Connection con = Database.getConnection();
 
-        String sql = "INSERT INTO Department (DepartmentID, DepartmentName, UserID) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Department (DepartmentName, UserID) VALUES (?, ?)";
         PreparedStatement ps = con.prepareStatement(sql);
-        ps.setInt(1, department.getDepartmentID());
-        ps.setString(2, department.getDepartmentName());
-        ps.setInt(3, department.getUserID());
+        ps.setString(1, department.getDepartmentName());
+        ps.setInt(2, department.getUserID());
 
         int result = ps.executeUpdate();
 
         Database.closePreparedStatement(ps);
         Database.closeConnection(con);
-
         return result;
     }
+
 
     public int update(Department department) throws SQLException {
         Connection connection = Database.getConnection();
