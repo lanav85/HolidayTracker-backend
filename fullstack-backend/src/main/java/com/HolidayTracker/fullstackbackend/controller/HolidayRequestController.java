@@ -37,7 +37,7 @@ public class HolidayRequestController {
             @RequestParam(required = false) String status,
             @RequestParam(required = false) Integer departmentId) {
         try {
-            List<HolidaysRequest> holidayRequests = holidayRequestDAO.getHolidayRequests(requestId, userId, departmentId, status);
+            List<HolidaysRequestWithUserName> holidayRequests = holidayRequestDAO.getHolidayRequests(requestId, userId, departmentId, status);
             return ResponseEntity.ok(holidayRequests);
         } catch (SQLException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
