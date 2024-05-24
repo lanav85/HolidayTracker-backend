@@ -9,6 +9,25 @@ import java.util.Date;
 @Component
 public class HolidaysRequestWithUserName extends  HolidaysRequest{
     private String userName;
+    private String roleName;
+    private String departmentName;
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
 
     public String getUserName() {
         return userName;
@@ -19,15 +38,20 @@ public class HolidaysRequestWithUserName extends  HolidaysRequest{
     }
 
     @JsonCreator
-    public HolidaysRequestWithUserName(int requestID, int userID, Date requestFrom, Date requestTo, String status, String userName) {
+    public HolidaysRequestWithUserName(int requestID, int userID, Date requestFrom, Date requestTo, String status, String userName, String roleName, String departmentName) {
         super(requestID, userID, requestFrom, requestTo, status);
         this.userName = userName;
+        this.roleName =roleName;
+        this.departmentName = departmentName;
 
     }
 
-    public HolidaysRequestWithUserName(int userID, Date requestFrom, Date requestTo, String status, String userName) {
+    public HolidaysRequestWithUserName(int userID, Date requestFrom, Date requestTo, String status, String userName, String roleName, String departmentName) {
         super(userID, requestFrom, requestTo, status);
         this.userName = userName;
+        this.roleName =roleName;
+        this.departmentName = departmentName;
+
 
     }
 }

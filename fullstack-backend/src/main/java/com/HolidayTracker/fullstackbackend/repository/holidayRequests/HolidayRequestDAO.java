@@ -21,10 +21,12 @@ public class HolidayRequestDAO {
                                                                 String status) throws SQLException {
         Connection con = Database.getConnection();
         String select_sql =
-                "SELECT r.RequestID, r.UserID, r.RequestFrom, r.RequestTo, r.Status, u.data->>'name' AS UserName " +
+                "SELECT r.RequestID, r.UserID, r.RequestFrom, r.RequestTo, r.Status, " +
+                        "u.data->>'name' AS UserName, d.departmentName, ro.roleDescription AS roleName " +
                         "FROM Requests r " +
                         "JOIN Users u ON r.UserID = u.UserID " +
-                        "JOIN Department d ON u.DepartmentID = d.DepartmentID";
+                        "JOIN Department d ON u.DepartmentID = d.DepartmentID " +
+                        "JOIN Role ro ON u.RoleID = ro.roleID";
 
         StringBuilder where_sql = new StringBuilder();
         if (requestId != null) {
@@ -70,9 +72,12 @@ public class HolidayRequestDAO {
                     Date resRequestTo = rs.getDate("RequestTo");
                     String resStatus = rs.getString("Status");
                     String resUserName = rs.getString("UserName");
+                    String resRoleName = rs.getString("roleName");
+                    String resDepartmentName = rs.getString("departmentName");
 
                     HolidaysRequestWithUserName holidayRequest = new HolidaysRequestWithUserName(
-                            resRequestID, resUserID, resRequestFrom, resRequestTo, resStatus, resUserName);
+                            resRequestID, resUserID, resRequestFrom, resRequestTo, resStatus,
+                            resUserName, resRoleName, resDepartmentName);
                     holidayRequests.add(holidayRequest);
                 }
             }
@@ -81,6 +86,7 @@ public class HolidayRequestDAO {
         Database.closeConnection(con);
         return holidayRequests;
     }
+
     // Delete holiday request
     public int deleteHolidayRequests(int id) throws SQLException {
 
