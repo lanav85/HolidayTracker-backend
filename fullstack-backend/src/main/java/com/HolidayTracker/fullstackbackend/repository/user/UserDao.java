@@ -20,7 +20,7 @@ public class UserDao {
 
         // SQL query to select user data based on user ID.
 
-        String sql = "SELECT UserID,Data,Email,HolidayEntitlement,RoleID,DepartmentID FROM users WHERE UserID = ?"; // "Where
+        String sql = "SELECT UserID,Data,Email,HolidayEntitlement,DepartmentID,RoleID FROM users WHERE UserID = ?"; // "Where
         // PreparedStatement is an object with a parameterized query (SELECT * FROM
         // users WHERE UserID = ?). The value of the parameter (userId) is set using
         // setInt() method before executing the query.
@@ -40,8 +40,9 @@ public class UserDao {
             String Data = rs.getString("Data");
             String Email = rs.getString("Email");
             int HolidayEntitlement = rs.getInt("HolidayEntitlement");
-            int RoleID = rs.getInt("RoleID");
             int DepartmentID = rs.getInt("DepartmentID");
+            int RoleID = rs.getInt("RoleID");
+
 
             // Creates a new User object with the retrieved data.
             user = new User(UserID, Data, Email, HolidayEntitlement, DepartmentID, RoleID);
@@ -60,7 +61,7 @@ public class UserDao {
     public User getUserByEmail(String email) throws SQLException {
         Connection con = Database.getConnection();
         User user = null;
-        String sql = "SELECT UserID, Data, Email, HolidayEntitlement, RoleID, DepartmentID FROM users WHERE Email = ?";
+        String sql = "SELECT UserID, Data, Email, HolidayEntitlement , DepartmentID , RoleID FROM users WHERE Email = ?";
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setString(1, email);
         ResultSet rs = ps.executeQuery();
@@ -69,10 +70,11 @@ public class UserDao {
             String Data = rs.getString("Data");
             String Email = rs.getString("Email");
             int HolidayEntitlement = rs.getInt("HolidayEntitlement");
-            int RoleID = rs.getInt("RoleID");
             int DepartmentID = rs.getInt("DepartmentID");
+            int RoleID = rs.getInt("RoleID");
 
-            user = new User(UserID, Data, Email, HolidayEntitlement, RoleID, DepartmentID);
+
+            user = new User(UserID, Data, Email, HolidayEntitlement, DepartmentID, RoleID);
         }
         Database.closeResultSet(rs);
         Database.closePreparedStatement(ps);
@@ -142,8 +144,6 @@ public class UserDao {
 
         return users;
     }
-
-
 
     // Create new user
     public int insert(User user) throws SQLException {
