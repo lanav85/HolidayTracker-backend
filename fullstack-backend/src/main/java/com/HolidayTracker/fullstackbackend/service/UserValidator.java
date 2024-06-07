@@ -1,8 +1,11 @@
 package com.HolidayTracker.fullstackbackend.service;
 
+import com.HolidayTracker.fullstackbackend.constants.Roles;
+import com.HolidayTracker.fullstackbackend.model.Department;
 import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.model.UserWithRoleName;
 import com.HolidayTracker.fullstackbackend.repository.Database;
+import com.HolidayTracker.fullstackbackend.repository.department.DepartmentDao;
 import com.HolidayTracker.fullstackbackend.repository.user.UserDao;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +25,8 @@ import java.util.List;
 public class UserValidator {
     @Autowired
     private final UserDao userDao;
+    @Autowired
+    private DepartmentDao departmentDao;
 
     public UserValidator(UserDao userDao) {
         this.userDao = userDao;
@@ -129,6 +134,9 @@ public class UserValidator {
             // Fetch the old user details before updating
             User oldUser = user.getUserID() != 0 ? userDao.get(user.getUserID()) : null;
 
+            //Validate the user changes (throws an IllegalArgumentException if any violations)
+            validateUser(oldUser, user);
+
             // If user is being updated
             if (oldUser != null) {
                 // Update user details
@@ -158,6 +166,33 @@ public class UserValidator {
         } catch (SQLException e) {
             System.err.println("SQLException occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("SQLException occurred: " + e.getMessage());
+        } catch (IllegalArgumentException e){
+            System.err.println("IllegalArgumentException occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    /**
+     * Check if this new/updated user would be valid. If not throw an IllegalArgumentException
+     * @param initialUserState The previous user data before the update. For new users this will be null
+     * @param newUserState The new user data requested
+     */
+    private void validateUser(User initialUserState, User newUserState) throws IllegalArgumentException, SQLException {
+
+        //The role id must be validated if
+        // - this is a new user (initialUserState == null) OR
+        // - this users previous role id is different to their new role id
+        boolean hasNewRoleId = initialUserState == null || (initialUserState.getRoleID() != newUserState.getRoleID());
+
+        if(hasNewRoleId){
+            if(newUserState.getRoleID() == Roles.Manager.getRoleId()){
+                //If this new user will be a manager, we need to make sure that department doesn't already have a manager
+                Department department = departmentDao.get(newUserState.getDepartmentID());
+                if(department.getUserID() != null && department.getUserID() != newUserState.getUserID()){
+                    //There is already a manager for this department and its not this newUser, therefore a violation
+                    throw new IllegalArgumentException(department.getDepartmentName() + " department already has a different manager assigned!");
+                }
+            }
         }
     }
 

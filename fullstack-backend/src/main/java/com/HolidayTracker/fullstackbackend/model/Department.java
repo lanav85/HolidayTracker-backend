@@ -4,9 +4,9 @@ public class Department {
 
     private int departmentID;
     private String departmentName;
-    private int userID;
+    private Integer userID;
 
-    public Department(int departmentID, String departmentName, int userID) {
+    public Department(int departmentID, String departmentName, Integer userID) {
         this.departmentID = departmentID;
         this.departmentName = departmentName;
         this.userID = userID;
@@ -28,11 +28,11 @@ public class Department {
         this.departmentName = departmentName;
     }
 
-    public int getUserID() {
+    public Integer getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(Integer userID) {
         this.userID = userID;
     }
 

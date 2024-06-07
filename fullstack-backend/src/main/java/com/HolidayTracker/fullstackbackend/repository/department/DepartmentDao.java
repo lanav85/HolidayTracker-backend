@@ -25,7 +25,10 @@ public class DepartmentDao {
         if (rs.next()) {
             int departmentIDResult = rs.getInt("DepartmentID");
             String departmentName = rs.getString("DepartmentName");
-            int userID = rs.getInt("UserID");
+            Integer userID = rs.getInt("UserID");
+            if(rs.wasNull()){
+                userID = null;
+            }
 
             department = new Department(departmentIDResult, departmentName, userID);
         }
