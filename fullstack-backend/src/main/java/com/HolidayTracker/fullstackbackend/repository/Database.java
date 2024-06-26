@@ -1,16 +1,33 @@
 package com.HolidayTracker.fullstackbackend.repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.sql.*;
 
+@Component
 public class Database {
-    private static String url = "jdbc:postgresql://localhost:5432/HolidayTrackerDB";
-    private static String username = "postgres";
-    private static String password = "1234";
+    private final String url;
+    private final String username;
+    private final String password;
+
+    private static Database instance;
+
+    @Autowired
+    public Database(@Value("${spring.datasource.url}") String url,
+                    @Value("${spring.datasource.username}") String username,
+                    @Value("${spring.datasource.password}") String password) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        instance = this;
+    }
 
     // Method to establish a connection to the database
     public static Connection getConnection() throws SQLException {
         Connection connection = null;
-        connection = DriverManager.getConnection(url, username, password);
+        connection = DriverManager.getConnection(instance.url, instance.username, instance.password);
         return connection;
     }
     // Closes the connection to the database
