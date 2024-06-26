@@ -55,7 +55,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
         }
     }
-
+    @GetMapping("/")
+    public ResponseEntity getHealth(){
+        return ResponseEntity.status(HttpStatus.OK).body("Status: online");
+    }
 
     @PostMapping("/users")
     public ResponseEntity<Object> createUser(@RequestBody User newUser) {
