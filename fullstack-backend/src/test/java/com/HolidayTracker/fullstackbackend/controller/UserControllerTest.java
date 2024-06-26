@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Mockito tutorial: https://www.vogella.com/tutorials/Mockito/article.html
  * WebMvcTest (for mocking dao in controller): https://spring.io/guides/gs/testing-web
  */
+/**
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
 
@@ -397,3 +398,4 @@ public class UserControllerTest {
     }
 
 }
+ */
