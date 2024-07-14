@@ -1,14 +1,18 @@
 package com.HolidayTracker.fullstackbackend.controller;
 
+import com.HolidayTracker.fullstackbackend.auth.AuthenticationHelper;
 import com.HolidayTracker.fullstackbackend.model.User;
+import com.HolidayTracker.fullstackbackend.model.UserLogin;
 import com.HolidayTracker.fullstackbackend.model.UserWithRoleName;
 import com.HolidayTracker.fullstackbackend.repository.user.UserDao;
 import com.HolidayTracker.fullstackbackend.service.UserValidator;
+import com.amazonaws.services.cognitoidp.model.NotAuthorizedException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -19,6 +23,49 @@ public class UserController {
     private UserDao userDaoImpl;
     @Autowired
     private UserValidator userValidator;
+
+    @Value("${aws.iam.clientid}")
+    private String awsClientId;
+    @Value("${aws.cognito.userpoolid}")
+    private String awsUserPoolId;
+    @Value("${aws.cognito.region}")
+    private String awsRegion;
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> getUsers(
+            @RequestBody UserLogin userLogin){
+
+        AuthenticationHelper authenticationHelper = new AuthenticationHelper(
+                awsUserPoolId,
+                awsClientId,
+                awsRegion
+        );
+
+        JSONObject awsCognitoResponse;
+        try {
+            awsCognitoResponse = authenticationHelper.PerformSRPAuthentication(userLogin.getEmail(), userLogin.getPassword());
+        }
+        catch (NotAuthorizedException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getErrorMessage());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+        String verifiedEmail = awsCognitoResponse.getString("email");
+
+        ResponseEntity<Object> userResponse = getUsers(null, verifiedEmail, null);
+        if(userResponse.getStatusCode().is2xxSuccessful()){
+            try {
+                return ResponseEntity.ok((User) userResponse.getBody());
+            }
+            catch (Exception e){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is registered but error getting user data: " + e.getMessage());
+            }
+        }else {
+            return userResponse;
+        }
+    }
 
     @GetMapping("/users")
     public ResponseEntity<Object> getUsers(
