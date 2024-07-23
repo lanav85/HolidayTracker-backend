@@ -37,6 +37,10 @@ public class CreateHolidayRequestValidator {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             calendar.add(Calendar.DAY_OF_YEAR, 1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
             Date tomorrow = calendar.getTime();
 
             if (requestFrom.before(tomorrow)) {
@@ -112,8 +116,11 @@ public class CreateHolidayRequestValidator {
                 continue;
             }
 
+            boolean newRequestStartsBeforeOrSame = !newRequestFrom.after(existingRequestTo);
+            boolean newRequestEndsSameOrAfter = !newRequestTo.before(existingRequestFrom);
+
             // Check for overlap
-            if (newRequestFrom.before(existingRequestTo) && newRequestTo.after(existingRequestFrom)) {
+            if (newRequestStartsBeforeOrSame && newRequestEndsSameOrAfter) {
                 overlapFound = true;
                 break;
             }

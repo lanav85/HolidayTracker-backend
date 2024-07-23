@@ -2,7 +2,6 @@ package com.HolidayTracker.fullstackbackend.controller;
 
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequest;
 import com.HolidayTracker.fullstackbackend.model.HolidaysRequestWithUserName;
-import com.HolidayTracker.fullstackbackend.model.User;
 import com.HolidayTracker.fullstackbackend.repository.holidayRequests.HolidayRequestDAO;
 import com.HolidayTracker.fullstackbackend.service.CreateHolidayRequestValidator;
 import com.HolidayTracker.fullstackbackend.service.UpdateHolidayRequestValidator;
@@ -12,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.util.Collections;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -62,7 +62,7 @@ public class HolidayRequestController {
     @PostMapping("/HolidayRequest")
     public ResponseEntity<Object> CreateHolidayRequest(@RequestBody HolidaysRequest holidaysRequest) {
         try {
-            // Validate the holiday request
+            holidaysRequest = formatRequestHours(holidaysRequest);
             ResponseEntity<Object> validationResponse = holidayRequestValidator.validateHolidayRequest(holidaysRequest);
             if (validationResponse.getStatusCode() != HttpStatus.OK) {
                 return validationResponse;
@@ -88,6 +88,7 @@ public class HolidayRequestController {
     public ResponseEntity<Object> UpdateHolidayRequest(@PathVariable int requestID, @RequestBody HolidaysRequest holidaysRequest) {
 
         try {
+            holidaysRequest = formatRequestHours(holidaysRequest);
             ResponseEntity<Object> validationResponse = updateHolidayRequestValidator.validateHolidayRequest(holidaysRequest);
             if (validationResponse.getStatusCode() != HttpStatus.OK) {
                 // Return validation error response
@@ -107,4 +108,25 @@ public class HolidayRequestController {
             throw new RuntimeException(e);
         }
     }
+
+    private HolidaysRequest formatRequestHours(HolidaysRequest holidaysRequest){
+        if(holidaysRequest != null && holidaysRequest.getRequestFrom() != null){
+            holidaysRequest.setRequestFrom(getMidnight(holidaysRequest.getRequestFrom()));
+        }
+        if(holidaysRequest != null && holidaysRequest.getRequestTo() != null){
+            holidaysRequest.setRequestTo(getMidnight(holidaysRequest.getRequestTo()));
+        }
+        return holidaysRequest;
+    }
+
+    private Date getMidnight(Date dt){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dt);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
 }
